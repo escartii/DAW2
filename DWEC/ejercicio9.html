@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 9</title>
+</head>
+
+<body>
+    <script>
+        let comprobarPalindromo = prompt("Escribe una palabra: ");
+
+        let array = comprobarPalindromo.split("");
+        console.log(array);
+
+        let arrayReves = array.reverse();
+        console.log(arrayReves);
+        // Booleano
+        let esPalindromo = true;
+        let segundonum = array.length - 1;
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] != array[segundonum]) {
+                esPalindromo = false;
+                break;
+            }
+            segundonum--;
+        }
+
+        if (esPalindromo) {
+            console.log("La palabra es palíndroma");
+        } else {
+            console.log("La palabra no es palíndroma");
+        }
+    </script>
+</body>
+
+</html>
