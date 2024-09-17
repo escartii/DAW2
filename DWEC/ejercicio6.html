@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let arr = [];
+        let esValido = true;
+        for (let i = 0; i <= 2; i++) {
+            let lados = prompt("introduce los cm de los lados del triangulo: ")
+            arr[i] = lados;
+            console.log(lados);
+        }
+
+        // comprobar que es valido 
+        if (arr[0] + arr[1] > arr[2] || arr[1] + arr[2] > arr[0]) {
+            console.log("El triangulo es valido");
+        } else {
+            console.log("NO es valido");
+        }
+        // Equilatero
+        if (arr[0] == arr[1] && arr[0] == arr[2]) {
+            alert("Triangulo equilatero");
+        }
+        // Comprobacion isosceles
+        if (arr[0] == arr[1] && arr[0] != arr[2]) {
+            alert("Triangulo isosceles");
+        }
+        // Escaleno
+        if (arr[0] != arr[1] && arr[1] != arr[2]) {
+            alert("Escaleno");
+        }
+    </script>
+</body>
+</html>
