@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio1</title>
+</head>
+<body>
+    <script>
+        let saberTamanyo = prompt("Introduce el tamaño del array: ")
+        let tamanyoParseado = parseInt(saberTamanyo);
+        const numeros = [];
+        for (let i = 0; i < tamanyoParseado; i++) {
+            let guardarNums = prompt("Dime el número: ");
+            numeros.push(guardarNums);
+        }
+
+        const max = Math.max(...numeros);
+        console.log(max);
+    </script>
+</body>
+</html>

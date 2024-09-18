@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio2</title>
+</head>
+<body>
+    <script>
+        function elevarNum(numeros) {
+            let acumulador = 0;
+            for (let i = 0; i < numeros.length; i++) {
+                let multiplicar = parseInt(numeros[i]) * parseInt(numeros[i]);
+                acumulador += multiplicar;
+            }
+            return acumulador;
+        }
+
+        let num = prompt("Introdce un numero para comprobar que es feliz o triste: ")
+        console.log(num);
+        let numParseado;
+        numParseado = num.split('');
+        // longitud
+        console.log(numParseado.length)
+        console.log(elevarNum(numParseado))
+
+        for (let i = 0; i < 8; i++) {
+            numParseado = num.split('')
+            let resultado = elevarNum(numParseado);
+            console.log(resultado)
+            if (resultado != 1) {
+                num = resultado;
+
+            } else {
+                console.log("Es feliz :D")
+            }
+        }
+    </script>
+</body>
+</html>
