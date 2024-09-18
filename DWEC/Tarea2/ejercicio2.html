@@ -7,6 +7,7 @@
 </head>
 <body>
     <script>
+        
         function elevarNum(numeros) {
             let acumulador = 0;
             for (let i = 0; i < numeros.length; i++) {
@@ -15,24 +16,21 @@
             }
             return acumulador;
         }
-
+        
         let num = prompt("Introdce un numero para comprobar que es feliz o triste: ")
         console.log(num);
         let numParseado;
-        numParseado = num.split('');
-        // longitud
-        console.log(numParseado.length)
-        console.log(elevarNum(numParseado))
-
         for (let i = 0; i < 8; i++) {
             numParseado = num.split('')
             let resultado = elevarNum(numParseado);
             console.log(resultado)
             if (resultado != 1) {
                 num = resultado;
-
+                num = num.toString();
             } else {
                 console.log("Es feliz :D")
+                // salir del bucle
+                i = 9;
             }
         }
     </script>
