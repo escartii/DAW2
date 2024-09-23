@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Ejercicio9</title>
+</head>
+<body>
+    <script>
+        function protegerEmail(email) {
+            let [usuario, dominio] = email.split('@');
+            let usuarioProtegido = usuario.slice(0, 5) + '...';
+            return `${usuarioProtegido}@${dominio}`;
+        }
+
+        console.log(protegerEmail("escartismx@ieslasenia.org"));
+    </script>
+</body>
+</html>

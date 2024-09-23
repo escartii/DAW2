@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Ejercicio8</title>
+</head>
+
+<body>
+    <script>
+        function extraer(cadena, numCaracteres, comenzarPor) {
+            if (comenzarPor === "fin") {
+                return cadena.slice(-numCaracteres);
+            } else {
+                return cadena.slice(0, numCaracteres);
+            }
+        }
+
+        let resultado = extraer("Cristiano Ronaldo Apesta", 4, "fin");
+        console.log(resultado);
+    </script>
+</body>
+
+</html>

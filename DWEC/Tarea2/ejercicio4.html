@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 4</title>
+</head>
+<body>
+    <script>
+        // Escribir una función a la que le pasemos un argumento y nos indique si este es un objeto Date o no
+        function comprobarDateEsObjeto(hora) {
+            return (hora instanceof Date);
+        }
+        
+        let fecha = new Date();
+        if (comprobarDateEsObjeto(fecha)) {
+            console.log("Si es un Objeto Date");
+        } else {
+            console.log("No es un Objeto Date");
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <script>
+        function convertirCamelCase(cadena) {
+            const myArray = cadena.split(" ");
+            for (let i = 0; i < myArray.length; i++) {
+                console.log(myArray[i]);
+                let cortar = myArray[i][0].toLowerCase();
+                console.log(cortar)
+            }
+
+
+
+            return myArray;
+
+
+        }
+
+        let cadena = convertirCamelCase("Alvaro escarti");
+        console.log(cadena);
+    </script>
+</body>
+</html>
