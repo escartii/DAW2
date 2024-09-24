@@ -7,22 +7,20 @@
 </head>
 <body>
     <script>
+
+        // Convertir a camelCase
         function convertirCamelCase(cadena) {
             const myArray = cadena.split(" ");
-            for (let i = 0; i < myArray.length; i++) {
-                console.log(myArray[i]);
-                let cortar = myArray[i][0].toLowerCase();
-                console.log(cortar)
+            myArray[0] = myArray[0].toLowerCase();
+            let guardarArray = myArray[0];
+            for (let i = 1; i < myArray.length; i++) {
+                let cortar = myArray[i][0].toUpperCase();
+                guardarArray += `${cortar + myArray[i].slice(1)}`;
             }
-
-
-
-            return myArray;
-
-
+            return guardarArray;
         }
 
-        let cadena = convertirCamelCase("Alvaro escarti");
+        let cadena = convertirCamelCase("Alvaro escarti patata");
         console.log(cadena);
     </script>
 </body>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3</title>
+</head>
+<body>
+    <script>
+        // Comprobar DNI
+        var dni = "12345678Z";
+        var letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+        var letraDNI = dni.charAt(dni.length - 1);
+        var numeroDNI = parseInt(dni.substring(0, dni.length - 1)); 
+        var letraCalculada = letras.charAt(numeroDNI % 23); 
+
+        if (letraDNI === letraCalculada) {
+            console.log("DNI válido");
+        } else {
+            console.log("DNI inválido");
+        }
+
+        // Comprobar correo
+        var correo = "example@example.com";
+        var regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (regexCorreo.test(correo)) {
+            console.log("Correo válido");
+        } else {
+            console.log("Correo inválido");
+        }
+
+        // Comprobar teléfono
+        var telefono = "123456789";
+        var regexTelefono = /^\d{9}$/;
+
+        if (regexTelefono.test(telefono)) {
+            console.log("Teléfono válido");
+        } else {
+            console.log("Teléfono inválido");
+        }
+
+        // Comprobar IP
+        var ip = "192.168.0.1";
+        var regexIP = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/; 
+
+        if (regexIP.test(ip)) {
+            console.log("IP válida");
+        } else {
+            console.log("IP inválida");
+        }
+
+        // Comprobar URL
+        var url = "https://www.google.es";
+        var regexURL = /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;  // Patrón básico para URLs
+
+        if (regexURL.test(url)) {
+            console.log("URL válida");
+        } else {
+            console.log("URL inválida");
+        }
+    </script>
+</body>
+</html>
