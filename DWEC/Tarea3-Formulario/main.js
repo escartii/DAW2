@@ -1,67 +1,83 @@
-function comprobarNombre(){
-    let nombre = document.getElementById("nombre");
-    if (/^\p{Lu}/u.test(nombre.value)) {
-        alert(`${nombre.value} empieza por Mayus`);
-    } else {
-        alert(`${nombre.value} no empieza por mayus`);
+// creo una variable para guardar las contraseñas antes de ser modificadas por astericos
+let passwordReal = "";
+let repetirPasswordReal = "";
+
+
+function transformarPassword(event) {
+    let inputPassword = document.getElementById("password");
+    let charIngresado = String.fromCharCode(event.which || event.keyCode);
+
+    if (charIngresado.match(/[a-zA-Z0-9@$!%*?&]/)) {
+        passwordReal += charIngresado;
+        inputPassword.value += "*"; 
     }
+
+    event.preventDefault(); 
 }
 
-function comprobarApellidos(){
+function transformarPasswordRepetida(event) {
+    let inputRepetirPassword = document.getElementById("repetirPassword");
+    let charIngresado = String.fromCharCode(event.which || event.keyCode);
+
+    if (charIngresado.match(/[a-zA-Z0-9@$!%*?&]/)) {
+        repetirPasswordReal += charIngresado;
+        inputRepetirPassword.value += "*";
+    }
+
+    event.preventDefault(); 
+}
+
+function comprobarNombre() {
+    let nombre = document.getElementById("nombre").value;
+    return nombre !== "" && /^\p{Lu}/u.test(nombre) ? "" : "El nombre debe comenzar con mayúscula.\n";
+}
+
+function comprobarApellidos() {
     let apellidos = document.getElementById("apellidos").value;
     let palabras = apellidos.split(" ");
-
-    if (palabras.length === 2 && /^[A-Z]/.test(palabras[0]) && /^[A-Z]/.test(palabras[1])) {
-        alert("Los apellidos comienzan por mayúscula");
-    } else {
-        alert("Al menos una de las palabras no está en mayúsculas");
-    }
+    return palabras.length === 2 && /^[A-Z]/.test(palabras[0]) && /^[A-Z]/.test(palabras[1]) 
+        ? "" : "Los apellidos deben tener dos palabras y comenzar con mayúsculas.\n";
 }
 
-function comprobarEmail(){
-    let email = document.getElementById("email");
+function comprobarEmail() {
+    let email = document.getElementById("email").value;
     let regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (regexCorreo.test(email.value)) {
-        alert("El correo es valido")
-    } else {
-        alert("El correo no es valido")
-    }
+    return regexCorreo.test(email) ? "" : "El correo no es válido.\n";
 }
 
 function comprobarDNI() {
-    let inputdni = document.getElementById("DNI");
-    let dni = inputdni.value;
+    let dni = document.getElementById("DNI").value;
     let letras = "TRWAGMYFPDXBNJZSQVHLCKE";
     let letraDNI = dni.charAt(dni.length - 1);
-    let numeroDNI = parseInt(dni.substring(0, dni.length - 1)); 
-    let letraCalculada = letras.charAt(numeroDNI % 23); 
-
-    if (letraDNI === letraCalculada) {
-        alert(`${"Este DNI: " + dni + " Es válido"}`)
-    } else {
-        console.log("DNI inválido");
-    }
-}
-
-function ponerAstericos() {
-    let contrasenyaInput = document.getElementById("password");
-    let contrasenya = contrasenyaInput.value;
-    let asteriscos = "*".repeat(contrasenya.length);
-    contrasenyaInput.value = asteriscos;
+    let numeroDNI = parseInt(dni.substring(0, dni.length - 1));
+    let letraCalculada = letras.charAt(numeroDNI % 23);
+    return letraDNI === letraCalculada ? "" : "El DNI no es válido.\n";
 }
 
 function comprobarPassword() {
-    let password = document.getElementById("password").value;
+    let password = passwordReal;  // Aquí usamos la contraseña real
     let regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    if (regexPassword.test(password)) {
-        alert("La contraseña cumple los requisitos");
-    } else {
-        alert("La contraseña no cumple los requisitos");
-    }
+    return regexPassword.test(password) ? "" : "La contraseña no cumple los requisitos (min. 8 caracteres, 1 mayúscula, 1 número y 1 símbolo).\n";
 }
 
+function comprobarPasswordRepetida() {
+    let password = passwordReal;
+    let repetirPassword = repetirPasswordReal;
+    return password === repetirPassword ? "" : "Las contraseñas no coinciden.\n";
+}
 
+function validarFormulario() {
+    let errores = "";
+    errores += comprobarNombre();
+    errores += comprobarApellidos();
+    errores += comprobarEmail();
+    errores += comprobarDNI();
+    errores += comprobarPassword();
+    errores += comprobarPasswordRepetida();
 
-
+    if (errores === "") {
+        alert("Formulario enviado correctamente");
+    } else {
+        alert("Errores:\n" + errores);
+    }
+}

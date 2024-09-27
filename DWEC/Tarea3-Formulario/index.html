@@ -5,90 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Estilo</title>
+    <link rel="stylesheet" href="style.css">
     <script src="./main.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #e0f2f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .contenedor {
-            padding: 40px;
-            width: 100%;
-            max-width: 700px; /* Ancho del formulario */
-            background-color: #ccc; /* Fondo gris */
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* Sombra para mayor contraste */
-            border: 2px solid #000; /* Borde oscuro */
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 26px;
-            color: white;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: black;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 2px solid #000; /* Borde negro */
-            border-radius: 5px;
-            font-size: 18px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #5ab4f3;
-        }
-
-        button {
-            width: 100px; /* Ancho del botón */
-            padding: 10px;
-            background-color: #0000ff; /* Azul oscuro */
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 0 auto;
-            display: block;
-        }
-
-        button:hover {
-            background-color: #0000cc; /* Azul un poco más oscuro al pasar el mouse */
-        }
-
-        /* Centrar el botón */
-        .btn-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 
 <body>
     <div class="contenedor">
         <h2>Formulario Total</h2>
-        <form>
+        <form id="miFormulario">
             <label for="nombre">Nombre:</label>
             <input id="nombre" name="nombre" placeholder="Introduce tu nombre" onblur="comprobarNombre()">
 
@@ -102,19 +26,20 @@
             <input id="DNI" name="DNI" placeholder="Introduce tu DNI" onblur="comprobarDNI()">
 
             <label for="password">Password:</label>
-            <input id="password" name="password" placeholder="Introduce tu contraseña" onkeypress="ponerAstericos()" onblur="comprobarPassword()">
+            <input id="password" name="password" placeholder="Introduce tu contraseña" onkeypress="transformarPassword(event)" onblur="comprobarPassword()">
 
             <label for="repetirPassword">Repetir password:</label>
-            <input id="repetirPassword" name="repetirPassword" placeholder="Repite tu contraseña">
+            <input id="repetirPassword" name="repetirPassword" placeholder="Repite tu contraseña" onkeypress="transformarPasswordRepetida(event)" onblur="comprobarPasswordRepetida()">
 
             <label for="IP">IP Equipo:</label>
             <input type="text" id="IP" name="IP" placeholder="Introduce la IP de tu equipo">
 
             <div class="btn-container">
-                <button type="submit">Enviar</button>
+                <button type="button" onclick="validarFormulario()">Enviar</button>
             </div>
         </form>
     </div>
 </body>
+
 
 </html>
