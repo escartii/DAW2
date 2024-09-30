@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +13,8 @@
         }
     </style>
 </head>
-<body>
 
+<body>
     <form id="miFormulario">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" required><br><br>
@@ -27,27 +28,59 @@
         <button type="button" id="copiarBtn">Copiar</button>
     </form>
 
+    <!-- Cuando utilizamos id en el div, utilizaremos # para llamarlo en css.
+    Por el contrario, si el div es class utilizaremos '.' para llamarlo. -->
     <div id="listado"></div>
 
-    <script>
-        document.getElementById('copiarBtn').addEventListener('click', function() {
-            const nombre = document.getElementById('nombre').value.trim();
-            const dni = document.getElementById('dni').value.trim();
-            const email = document.getElementById('email').value.trim();
+    <script> 
+        // Añado un listener que escucha el 'click', cuando se produce click sobre el elemento copiarBtn
+        // me guardo el valor de las variables que contiene el formulario.
+        document.getElementById('copiarBtn').addEventListener('click', function () {
 
-            if (!nombre || !dni || !email) {
-                alert("Existen campos vacíos en el formulario");
-                return;
+            function comprobarDNI() {
+                let dni = document.getElementById("dni").value;
+                let letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+                let letraDNI = dni.charAt(dni.length - 1);
+                let numeroDNI = parseInt(dni.substring(0, dni.length - 1));
+                let letraCalculada = letras.charAt(numeroDNI % 23);
+                return letraDNI === letraCalculada ? true : false;
             }
 
-            const nuevoDiv = document.createElement('div');
-            nuevoDiv.textContent = `${nombre} con DNI ${dni} y e-mail ${email}`;
-            document.getElementById('listado').appendChild(nuevoDiv);
+            function comprobarEmail() {
+                let email = document.getElementById("email").value;
+                let regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regexCorreo.test(email) ? true : false;
+            }
 
-            // Limpiar el formulario después de copiar
-            document.getElementById('miFormulario').reset();
+            function comprobarNombre() {
+                let nombre = document.getElementById("nombre").value;
+                return nombre !== "" && /^\p{Lu}/u.test(nombre) ? true : false;
+            }
+
+            let letraDNI = comprobarDNI();
+            let regexCorreo = comprobarEmail();
+            let nombre = comprobarNombre();
+
+            if (letraDNI === true && regexCorreo === true && nombre === true) {
+                const nombre = document.getElementById('nombre').value;
+                const DNI = document.getElementById('dni').value;
+                const email = document.getElementById('email').value;
+
+                // Creo un nuevo div y le añado el texto concatenado con las variables
+                const nuevoDiv = document.createElement('div');
+                nuevoDiv.textContent = `${nombre} con DNI ${DNI} y e-mail ${email}`;
+                document.getElementById('listado').appendChild(nuevoDiv);
+
+                // Borrar el contenido del Fomrulario
+                document.getElementById('miFormulario').reset();
+            } else if (letraDNI === false) {
+                alert("El DNI no es válido o el campo está vacío");
+            } else if (regexCorreo === false) {
+                alert("El correo no es válido o el campo está vacío");
+            } else if (nombre === false) {
+                alert("El nombre debe comenzar con mayúscula");
+            }
         });
     </script>
-
 </body>
 </html>
