@@ -1,0 +1,11 @@
+#listado-1 {
+    width: 40%;
+    background-color: aqua;
+    float: left;
+}
+
+#listado-2 {
+    width: 40%;
+    background-color: bisque;
+    float: right;
+}
