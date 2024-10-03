@@ -1,4 +1,7 @@
 <?php
+/**
+ * @Author: Álvaro Escartí
+ */
 
 $numero1 = readline("Introduce el primer numero: ");
 $numero2 = readline("Introduce el segundo numero: ");
