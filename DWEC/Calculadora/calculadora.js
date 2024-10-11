@@ -1,6 +1,5 @@
 let operacion = '';
 
-// Función para agregar un valor (número o paréntesis) a la pantalla
 function agregarValor(valor) {
     const pantalla = document.querySelector('.pantalla input');
     if (pantalla.value === '0' && valor !== '.') {
@@ -16,21 +15,18 @@ function agregarValor(valor) {
     operacion += valor;
 }
 
-// Función para agregar una operación
 function agregarOperacion(operador) {
     const pantalla = document.querySelector('.pantalla input');
     pantalla.value += operador;
     operacion += operador;
 }
 
-// Función para borrar toda la pantalla
 function borrarPantalla() {
     const pantalla = document.querySelector('.pantalla input');
     pantalla.value = '0';
     operacion = '';
 }
 
-// Función para borrar el último carácter
 function borrarUltimo() {
     const pantalla = document.querySelector('.pantalla input');
     pantalla.value = pantalla.value.slice(0, -1);
@@ -40,7 +36,7 @@ function borrarUltimo() {
     }
 }
 
-// Función para calcular el resultado de la operación
+
 function calcularResultado() {
     const pantalla = document.querySelector('.pantalla input');
     try {
@@ -49,5 +45,10 @@ function calcularResultado() {
     } catch (error) {
         pantalla.value = '(((Error)))';
         operacion = '';
+    }
+
+    if (pantalla.value = "Infinity") {
+        pantalla.value = "(((Error)))";
+        alert("No puedes dividir por cero")
     }
 }
