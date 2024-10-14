@@ -1,5 +1,34 @@
 let operacion = '';
 
+document.addEventListener('keydown', function(event) {
+    const key = event.key;
+    const operadores = ['/', '*', '-', '+'];
+
+    // Si es un número o un punto
+    if (!isNaN(key) || key === '.') {
+        agregarValor(key);
+    }
+
+    // Si es un operador
+    if (operadores.includes(key)) {
+        agregarOperacion(key);
+    }
+
+    // cuando pulso enter llamo a la función calcularResultado()
+    if (key === 'Enter') {
+        calcularResultado();
+    }
+    // borro el último carácter
+    if (key === 'Backspace') {
+        borrarUltimo();
+    }
+
+    if (key === 'Escape') {
+        borrarPantalla();
+    }
+});
+
+
 function agregarValor(valor) {
     const pantalla = document.querySelector('.pantalla input');
     if (pantalla.value === '0' && valor !== '.') {
@@ -43,12 +72,7 @@ function calcularResultado() {
         let resultado = eval(pantalla.value.replace('x', '*')).toFixed(2);
         pantalla.value = resultado;
     } catch (error) {
-        pantalla.value = '(((Error)))';
+        pantalla.value = 'Error';
         operacion = '';
-    }
-
-    if (pantalla.value = "Infinity") {
-        pantalla.value = "(((Error)))";
-        alert("No puedes dividir por cero")
     }
 }
