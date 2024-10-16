@@ -65,7 +65,6 @@ function borrarUltimo() {
     }
 }
 
-
 function calcularResultado() {
     const pantalla = document.querySelector('.pantalla input');
     try {

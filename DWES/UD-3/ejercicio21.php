@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @Author: Álvaro Escartí
- */
+* @Author: Álvaro Escartí
+*/
 
 
 function comprobarDigitos($numero){
