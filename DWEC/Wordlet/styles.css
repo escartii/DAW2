@@ -1,47 +1,142 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif; /* Fuente más moderna */
     text-align: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px; /* Añade algo de espacio alrededor */
 }
 
 #game-board {
     display: grid;
     grid-template-rows: repeat(6, 1fr);
-    grid-gap: 5px;
-    max-width: 250px;
+    grid-gap: 10px; /* Aumenta el espacio entre filas */
+    max-width: 330px; /* Ajusta el ancho para que se vea más centrado y grande */
     margin: 20px auto;
+    padding: 10px;
+    border-radius: 8px; /* Bordes redondeados */
+    background-color: var(--board-bg-color); /* Fondo del tablero */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Añade sombra suave */
 }
 
 .row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
+    grid-gap: 8px; /* Más espacio entre las columnas */
 }
 
 .tile {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #d3d6da;
+    width: 55px; /* Ajusta el tamaño para que se vea más grande */
+    height: 55px;
+    border: 2px solid var(--tile-border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5em;
+    font-size: 1.6em;
     text-transform: uppercase;
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    transition: background-color 0.3s, border-color 0.3s; /* Transiciones suaves */
 }
 
 .tile.correct {
-    background-color: #6aaa64; /* Verde */
+    background-color: #6aaa64;
     border-color: #6aaa64;
     color: white;
 }
 
 .tile.present {
-    background-color: #c9b458; /* Amarillo */
+    background-color: #c9b458;
     border-color: #c9b458;
     color: white;
 }
 
 .tile.wrong {
-    background-color: #787c7e; /* Gris */
+    background-color: #787c7e;
     border-color: #787c7e;
     color: white;
 }
+
+/* Modo claro */
+:root {
+    --bg-color: #f3f4f6; /* Fondo claro sutil */
+    --text-color: #111827; /* Texto oscuro */
+    --tile-border: #d1d5db; /* Bordes claros */
+    --board-bg-color: #ffffff; /* Fondo blanco para el tablero */
+}
+
+/* Modo oscuro */
+.dark-mode {
+    --bg-color: #1f2937;
+    --text-color: #f3f4f6;
+    --tile-border: #374151;
+    --board-bg-color: #27272a; /* Fondo oscuro del tablero */
+}
+
+#toggle-mode {
+    margin-top: 15px;
+    padding: 8px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border: 1px solid var(--tile-border);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#keyboard {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.key {
+    width: 50px; /* Tamaño similar al de la imagen */
+    height: 60px;
+    margin: 4px;
+    border: none;
+    background-color: #3a3a3c; /* Color de fondo oscuro */
+    color: white; /* Texto blanco */
+    font-size: 1.5em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    transition: background-color 0.3s;
+}
+
+.key.correct {
+    background-color: #6aaa64; /* Verde para letras correctas */
+    color: white;
+}
+
+.key.present {
+    background-color: #c9b458; /* Amarillo para letras presentes */
+    color: white;
+}
+
+.key.wrong {
+    background-color: #787c7e; /* Gris para letras incorrectas */
+    color: white;
+}
+
+.key.special {
+    width: 100px; /* Botones especiales más anchos */
+    background-color: #4a4a4d; /* Color especial */
+    font-size: 1.2em;
+}
+
+.key.large {
+    width: 70px; /* Un poco más grande para teclas como "ENVIAR" y "BACKSPACE" */
+    background-color: #4a4a4d;
+    color: white;
+}
+

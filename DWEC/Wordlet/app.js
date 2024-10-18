@@ -45,13 +45,10 @@ const champions = [
 const chosenChampion = champions[Math.floor(Math.random() * champions.length)].name.toLowerCase();
 
 const board = document.getElementById('game-board');
-const input = document.getElementById('user-input');
-const submitBtn = document.getElementById('submit-btn');
 const feedback = document.getElementById('feedback');
-
-let attempt = 0;
-const maxAttempts = 6;
 let currentRow = 0;
+let currentTile = 0;
+const maxAttempts = 6;
 
 // Inicializar el tablero
 function initBoard() {
@@ -69,12 +66,89 @@ function initBoard() {
 
 initBoard();
 
-submitBtn.addEventListener('click', handleGuess);
+// Manejar las teclas virtuales
+const keys = document.querySelectorAll('.key');
+keys.forEach(key => {
+    key.addEventListener('click', () => {
+        const keyValue = key.textContent.toLowerCase();
+        if (keyValue === 'enter') {
+            handleGuess();
+        } else if (keyValue === '⌫') {
+            deleteLetter();
+        } else {
+            addLetter(keyValue);
+        }
+    });
+});
 
+// Detectar teclas físicas
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === 'enter') {
+        handleGuess();
+        return;
+    }
+
+    if (key === 'backspace') {
+        deleteLetter();
+        return;
+    }
+
+    if (/^[a-z]$/.test(key)) {
+        addLetter(key);
+    }
+});
+
+// Agregar letras a las casillas
+function addLetter(letter) {
+    if (currentTile < 5) {
+        const currentRowElement = board.children[currentRow];
+        const tile = currentRowElement.children[currentTile];
+        tile.textContent = letter.toUpperCase();
+        tile.dataset.letter = letter;
+        currentTile++;
+    }
+}
+
+// Eliminar la última letra
+function deleteLetter() {
+    if (currentTile > 0) {
+        currentTile--;
+        const currentRowElement = board.children[currentRow];
+        const tile = currentRowElement.children[currentTile];
+        tile.textContent = '';
+        delete tile.dataset.letter;
+    }
+}
+
+// Mostrar/ocultar alertas
+function showAlert(type) {
+    const successAlert = document.getElementById('alert-success');
+    const dangerAlert = document.getElementById('alert-danger');
+    const correctChampionEl = document.getElementById('correct-champion');
+    
+    // Ocultar ambas alertas antes de mostrar la correcta
+    successAlert.classList.add('hidden');
+    dangerAlert.classList.add('hidden');
+
+    if (type === 'success') {
+        successAlert.classList.remove('hidden');
+    } else if (type === 'danger') {
+        dangerAlert.classList.remove('hidden');
+        correctChampionEl.textContent = capitalize(chosenChampion); // Mostrar el campeón correcto
+    }
+}
+
+// Manejar el intento
 function handleGuess() {
-    const guess = input.value.toLowerCase();
+    const currentRowElement = board.children[currentRow];
+    const guess = Array.from(currentRowElement.children)
+        .map(tile => tile.dataset.letter)
+        .join('');
+
     if (guess.length !== 5) {
-        feedback.textContent = "¡Los nombres de los campeones deben tener 5 letras!";
+        feedback.textContent = "Debes completar la fila antes de verificar.";
         return;
     }
 
@@ -84,33 +158,70 @@ function handleGuess() {
         return;
     }
 
-    const currentRowElement = board.children[currentRow];
+    // Pintar las letras según la coincidencia
     for (let i = 0; i < 5; i++) {
         const tile = currentRowElement.children[i];
-        tile.textContent = guess[i].toUpperCase();
-        if (guess[i] === chosenChampion[i]) {
+        const letter = tile.dataset.letter;
+
+        if (letter === chosenChampion[i]) {
             tile.classList.add('correct');
-        } else if (chosenChampion.includes(guess[i])) {
+            updateKey(letter, 'correct');
+        } else if (chosenChampion.includes(letter)) {
             tile.classList.add('present');
+            updateKey(letter, 'present');
         } else {
             tile.classList.add('wrong');
+            updateKey(letter, 'wrong');
         }
     }
 
+    // Verificar si el jugador ha ganado o si ha terminado el juego
     if (guess === chosenChampion) {
         feedback.textContent = "¡Has adivinado el campeón!";
-        submitBtn.disabled = true;
+        showAlert('success'); // Mostrar alerta verde
+        document.removeEventListener('keydown', handleGuess);
     } else if (currentRow >= maxAttempts - 1) {
         feedback.textContent = `¡Juego terminado! El campeón era ${capitalize(chosenChampion)}.`;
-        submitBtn.disabled = true;
+        showAlert('danger'); // Mostrar alerta roja
+        document.removeEventListener('keydown', handleGuess);
     } else {
-        feedback.textContent = "";
         currentRow++;
+        currentTile = 0;
+        feedback.textContent = "";
     }
-    input.value = '';
-    attempt++;
 }
 
+// Actualizar el teclado
+function updateKey(letter, className) {
+    keys.forEach(key => {
+        if (key.textContent.toLowerCase() === letter.toLowerCase()) {
+            key.classList.add(className);
+        }
+    });
+}
+
+// Capitalizar la primera letra
 function capitalize(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
+
+const toggleButton = document.getElementById('toggle-mode');
+const body = document.body;
+
+// Comprobar el modo almacenado
+if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggleButton.textContent = "Cambiar a Modo Claro";
+}
+
+toggleButton.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+
+    if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+        toggleButton.textContent = "Cambiar a Modo Claro";
+    } else {
+        localStorage.setItem('theme', 'light');
+        toggleButton.textContent = "Cambiar a Modo Oscuro";
+    }
+});
