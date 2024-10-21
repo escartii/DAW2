@@ -54,7 +54,7 @@
     </form>
 
     <?php
-    if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['nombre'])) {
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
         // Recogemos los datos del formulario en un array
         $datosFormulario = array(
             'Nombre' => $_GET['nombre'],
