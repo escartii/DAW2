@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoL Wordle</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset de estilos básicos */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e5e7eb;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #333333;
+        }
+
+        #dark-mode-toggle {
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        #dark-mode-toggle:hover {
+            background-color: #4338ca;
+        }
+
+        #champion-type-icon {
+            width: 64px;
+            height: 64px;
+            margin: 15px auto;
+            transition: transform 0.3s ease;
+        }
+
+        #champion-type-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .info-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .dark-mode .game-container {
+            background-color: #1f1f1f;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .dark-mode .info-box {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: #e5e7eb;
+        }
+
+        .dark-mode h1 {
+            color: #e5e7eb;
+        }
+
+        .grid {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #d3d6da;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .cell.green {
+            background-color: #6aaa64;
+            color: white;
+            border-color: #6aaa64;
+        }
+
+        .cell.yellow {
+            background-color: #c9b458;
+            color: white;
+            border-color: #c9b458;
+        }
+
+        .cell.gray {
+            background-color: #787c7e;
+            color: white;
+            border-color: #787c7e;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .key {
+            flex: 1;
+            padding: 12px 0;
+            background-color: #d3d6da;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            user-select: none;
+        }
+
+        .key:hover {
+            background-color: #c4c7cc;
+        }
+
+        .key:active {
+            transform: scale(0.95);
+        }
+
+        .key.green {
+            background-color: #6aaa64;
+            color: white;
+        }
+
+        .key.yellow {
+            background-color: #c9b458;
+            color: white;
+        }
+
+        .key.gray {
+            background-color: #787c7e;
+            color: white;
+        }
+
+        .dark-mode .key {
+            background-color: #818384;
+            color: white;
+        }
+
+        .dark-mode .key:hover {
+            background-color: #6e6e70;
+        }
+
+        .dark-mode .key.green {
+            background-color: #538d4e;
+        }
+
+        .dark-mode .key.yellow {
+            background-color: #b59f3b;
+        }
+
+        .dark-mode .key.gray {
+            background-color: #3a3a3c;
+        }
+
+        /* Responsividad */
+        @media (max-width: 600px) {
+            .cell {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .key {
+                padding: 10px 0;
+                font-size: 0.9rem;
+            }
+
+            #champion-type-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .info-box {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+
+            #dark-mode-toggle {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>LoL Wordle</h1>
+        <button id="dark-mode-toggle">Modo Oscuro</button>
+        <img id="champion-type-icon" alt="Tipo de campeón">
+        <div class="info-container">
+            <div id="partype" class="info-box">Partype</div>
+            <div id="tags" class="info-box">Tags</div>
+        </div>
+        <div id="grid" class="grid"></div>
+        <div id="keyboard" class="keyboard">
+            <div class="keyboard-row" id="row1"></div>
+            <div class="keyboard-row" id="row2"></div>
+            <div class="keyboard-row" id="row3"></div>
+        </div>
+    </div>
+
+    <script>
+        let championsData = {};
+        let targetChampion;
+        let currentGuess = '';
+        let guessCount = 0;
+        let maxGuesses = 6;
+        let championNameLength;
+        const championTypes = ["assassin", "marksman", "mage", "tank"];
+
+        // Cargar los datos de los campeones desde el archivo JSON
+        fetch('champions.json')
+            .then(response => response.json())
+            .then(data => {
+                championsData = data.data;
+                initGame();
+            })
+            .catch(error => console.error('Error cargando los datos de campeones:', error));
+
+        function getChampionType(tags) {
+            for (let type of championTypes) {
+                if (tags.map(tag => tag.toLowerCase()).includes(type)) {
+                    return type;
+                }
+            }
+            return "tank"; // default if no match found
+        }
+
+        function selectRandomChampion() {
+            const champions = Object.keys(championsData);
+            const randomIndex = Math.floor(Math.random() * champions.length);
+            return champions[randomIndex];
+        }
+
+        function initGame() {
+            targetChampion = selectRandomChampion();
+            championNameLength = targetChampion.length;
+            console.log("Campeón objetivo:", targetChampion);
+            createGrid();
+            createKeyboard();
+            updateChampionInfo();
+        }
+
+        function updateChampionInfo() {
+            const championType = getChampionType(championsData[targetChampion].tags);
+            const iconElement = document.getElementById('champion-type-icon');
+            iconElement.src = `./img/${championType}.png`;
+            iconElement.alt = `Tipo de campeón: ${championType}`;
+
+            document.getElementById('partype').textContent = `Partype: ${championsData[targetChampion].partype}`;
+            document.getElementById('tags').textContent = `Tags: ${championsData[targetChampion].tags.join(', ')}`;
+        }
+
+        function createGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(${championNameLength}, 1fr)`;
+            for (let i = 0; i < maxGuesses; i++) {
+                for (let j = 0; j < championNameLength; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function createKeyboard() {
+            const keyboard = {
+                row1: 'QWERTYUIOP',
+                row2: 'ASDFGHJKL',
+                row3: 'ZXCVBNM'
+            };
+
+            for (let rowId in keyboard) {
+                const row = document.getElementById(rowId);
+                keyboard[rowId].split('').forEach(key => {
+                    const button = document.createElement('button');
+                    button.textContent = key;
+                    button.classList.add('key');
+                    button.addEventListener('click', () => handleKeyPress(key));
+                    row.appendChild(button);
+                });
+            }
+        }
+
+        function handleKeyPress(key) {
+            if (currentGuess.length < championNameLength && guessCount < maxGuesses) {
+                currentGuess += key;
+                updateGrid();
+            }
+        }
+
+        function updateGrid() {
+            const cells = document.querySelectorAll('.cell');
+            const rowStart = guessCount * championNameLength;
+            for (let i = 0; i < championNameLength; i++) {
+                cells[rowStart + i].textContent = currentGuess[i] || '';
+            }
+        }
+
+        function checkGuess() {
+            if (currentGuess.length !== championNameLength) return;
+
+            const targetName = targetChampion.toUpperCase();
+            const result = new Array(championNameLength).fill('gray');
+
+            // Check for correct letters in correct position
+            for (let i = 0; i < championNameLength; i++) {
+                if (currentGuess[i] === targetName[i]) {
+                    result[i] = 'green';
+                }
+            }
+
+            // Check for correct letters in wrong position
+            for (let i = 0; i < championNameLength; i++) {
+                if (result[i] !== 'green' && targetName.includes(currentGuess[i])) {
+                    result[i] = 'yellow';
+                }
+            }
+
+            updateGridColors(result);
+            updateKeyboardColors(result);
+
+            if (currentGuess === targetName) {
+                setTimeout(() => alert('¡Felicidades! Has adivinado el campeón.'), 100);
+            } else if (guessCount === maxGuesses - 1) {
+                setTimeout(() => alert(`Game over. El campeón era ${targetChampion}.`), 100);
+            }
+
+            guessCount++;
+            currentGuess = '';
+        }
+
+        function updateGridColors(result) {
+            const cells = document.querySelectorAll('.cell');
+            const rowStart = (guessCount) * championNameLength;
+            for (let i = 0; i < championNameLength; i++) {
+                cells[rowStart + i].classList.add(result[i]);
+            }
+        }
+
+        function updateKeyboardColors(result) {
+            for (let i = 0; i < championNameLength; i++) {
+                const key = result[i] === 'green' ? 'green' :
+                            result[i] === 'yellow' ? 'yellow' : 'gray';
+                const button = Array.from(document.querySelectorAll('.key'))
+                                    .find(k => k.textContent === currentGuess[i]);
+                if (button) {
+                    if (key === 'green') {
+                        button.classList.remove('yellow', 'gray');
+                        button.classList.add('green');
+                    } else if (key === 'yellow' && !button.classList.contains('green')) {
+                        button.classList.remove('gray');
+                        button.classList.add('yellow');
+                    } else if (!button.classList.contains('green') && !button.classList.contains('yellow')) {
+                        button.classList.add('gray');
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                checkGuess();
+            } else if (event.key === 'Backspace') {
+                currentGuess = currentGuess.slice(0, -1);
+                updateGrid();
+            } else if (event.key.match(/^[a-zA-Z]$/)) {
+                handleKeyPress(event.key.toUpperCase());
+            }
+        });
+
+        document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const toggleButton = document.getElementById('dark-mode-toggle');
+            if (document.body.classList.contains('dark-mode')) {
+                toggleButton.textContent = 'Modo Claro';
+            } else {
+                toggleButton.textContent = 'Modo Oscuro';
+            }
+        });
+    </script>
+</body>
+</html>

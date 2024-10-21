@@ -1,0 +1,81 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    color: #ffdd57;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+#guessInput {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 20px;
+    border: 2px solid #ffdd57;
+    background-color: #333;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+#submitGuess {
+    padding: 10px 20px;
+    background-color: #ffdd57;
+    border: none;
+    color: black;
+    cursor: pointer;
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+#submitGuess:hover {
+    background-color: #f4c000;
+}
+
+#feedback {
+    margin-top: 20px;
+}
+
+/* Estilo para los resultados de comparación */
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas: tags y partype */
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.result-grid div {
+    padding: 10px;
+    border: 2px solid #555;
+    text-align: center;
+    font-size: 1.2em;
+    border-radius: 4px;
+}
+
+.green {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.red {
+    background-color: #f44336;
+    color: #fff;
+}

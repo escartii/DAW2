@@ -43,6 +43,7 @@ const champions = [
 
 // Elegir un campeón aleatoriamente
 const chosenChampion = champions[Math.floor(Math.random() * champions.length)].name.toLowerCase();
+console.log(chosenChampion)
 
 const board = document.getElementById('game-board');
 const feedback = document.getElementById('feedback');
