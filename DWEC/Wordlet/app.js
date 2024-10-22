@@ -42,8 +42,9 @@ const champions = [
 ];
 
 // Elegir un campeón aleatoriamente
-const chosenChampion = champions[Math.floor(Math.random() * champions.length)].name.toLowerCase();
-console.log(chosenChampion)
+const chosenChampionObj = champions[Math.floor(Math.random() * champions.length)];
+const chosenChampion = chosenChampionObj.name.toLowerCase();
+console.log(chosenChampion);
 
 const board = document.getElementById('game-board');
 const feedback = document.getElementById('feedback');
@@ -66,6 +67,18 @@ function initBoard() {
 }
 
 initBoard();
+
+// Mostrar la imagen del campeón
+function showChampionImage() {
+    const championImage = document.getElementById('champion-image');
+    championImage.src = `./img/${chosenChampion}.png`; // Asumiendo que las imágenes tienen el nombre del campeón
+    championImage.style.display = "block"; // Mostrar la imagen
+    championImage.style.margin = "0 auto"; // Centrar la imagen horizontalmente
+}
+
+// Agregar el event listener para el botón de "Obtener Pista"
+const pistaButton = document.getElementById('obtener-pista');
+pistaButton.addEventListener('click', showChampionImage);
 
 // Manejar las teclas virtuales
 const keys = document.querySelectorAll('.key');
@@ -180,10 +193,12 @@ function handleGuess() {
     if (guess === chosenChampion) {
         feedback.textContent = "¡Has adivinado el campeón!";
         showAlert('success'); // Mostrar alerta verde
+        showChampionImage(); // Mostrar la imagen del campeón
         document.removeEventListener('keydown', handleGuess);
     } else if (currentRow >= maxAttempts - 1) {
         feedback.textContent = `¡Juego terminado! El campeón era ${capitalize(chosenChampion)}.`;
         showAlert('danger'); // Mostrar alerta roja
+        showChampionImage(); // Mostrar la imagen del campeón
         document.removeEventListener('keydown', handleGuess);
     } else {
         currentRow++;
