@@ -3,56 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>LoL Wordle</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <h1>LoL Wordle</h1>
-    <button id="toggle-mode">Cambiar a Modo Oscuro</button>
+    <div class="Animacion">
+        <img src="./img/Icon.png" alt="Icono de la aplicación" class="Icono">
+    </div>
+    <button id="cambiar-modo">Cambiar a Modo Oscuro</button>
     <div>
         <br><br>
         <button id="obtener-pista">Obtener Pista</button>
+        <button id="nueva-partida" class="btn">Empezar nueva partida</button>
         <br><br>
     </div>
-    <div id="champion-image-container">
-        <img id="champion-image" src="" alt="Imagen del Campeón" style="display: none;">
+    <div id="contenedor-imagen-campeon">
+        <img id="imagen-campeon" src="" alt="Imagen del Campeón" style="display: none;">
     </div>
-    <div id="game-board"></div>
-    <p id="feedback"></p>
+    <div id="tablero-juego"></div>
+    <p id="retroalimentacion"></p>
 
     <!-- Teclado virtual -->
-    <div id="keyboard">
-        <div class="key-row">
-            <button class="key">Q</button>
-            <button class="key">W</button>
-            <button class="key">E</button>
-            <button class="key">R</button>
-            <button class="key">T</button>
-            <button class="key">Y</button>
-            <button class="key">U</button>
-            <button class="key">I</button>
-            <button class="key">O</button>
-            <button class="key">P</button>
+    <div id="teclado">
+        <div class="fila-teclas">
+            <button class="tecla">Q</button>
+            <button class="tecla">W</button>
+            <button class="tecla">E</button>
+            <button class="tecla">R</button>
+            <button class="tecla">T</button>
+            <button class="tecla">Y</button>
+            <button class="tecla">U</button>
+            <button class="tecla">I</button>
+            <button class="tecla">O</button>
+            <button class="tecla">P</button>
         </div>
-        <div class="key-row">
-            <button class="key">A</button>
-            <button class="key">S</button>
-            <button class="key">D</button>
-            <button class="key">F</button>
-            <button class="key">G</button>
-            <button class="key">H</button>
-            <button class="key">J</button>
-            <button class="key">K</button>
-            <button class="key">L</button>
+        <div class="fila-teclas">
+            <button class="tecla">A</button>
+            <button class="tecla">S</button>
+            <button class="tecla">D</button>
+            <button class="tecla">F</button>
+            <button class="tecla">G</button>
+            <button class="tecla">H</button>
+            <button class="tecla">J</button>
+            <button class="tecla">K</button>
+            <button class="tecla">L</button>
         </div>
-        <div class="key-row">
-            <button class="key">Z</button>
-            <button class="key">X</button>
-            <button class="key">C</button>
-            <button class="key">V</button>
-            <button class="key">B</button>
-            <button class="key">N</button>
-            <button class="key">M</button>
+        <div class="fila-teclas">
+            <button class="tecla">Z</button>
+            <button class="tecla">X</button>
+            <button class="tecla">C</button>
+            <button class="tecla">V</button>
+            <button class="tecla">B</button>
+            <button class="tecla">N</button>
+            <button class="tecla">M</button>
         </div>
+    </div>
+    <div id="contenido-juego">
+        <!-- Contenido del juego existente -->
+        <button id="mostrar-lista">Mostrar/Ocultar Lista de Campeones</button>
+        <div id="lista-campeones" class="oculto">
+            <h2>Lista de Campeones</h2>
+            <ul id="campeones-list">
+                <!-- Lista de campeones -->
+            </ul>
+        </div>
+        <!-- Resto del contenido del juego -->
     </div>
     <script src="app.js"></script>
 </body>
