@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>LoL Wordle</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body>
     <h1>LoL Wordle</h1>
     <button id="toggle-mode">Cambiar a Modo Oscuro</button>
+    <div>
+        <br><br>
+        <button id="obtener-pista">Obtener Pista</button>
+        <br><br>
+    </div>
+    <div id="champion-image-container">
+        <img id="champion-image" src="" alt="Imagen del Campeón" style="display: none;">
+    </div>
     <div id="game-board"></div>
     <p id="feedback"></p>
 
@@ -51,5 +56,4 @@
     </div>
     <script src="app.js"></script>
 </body>
-
 </html>
