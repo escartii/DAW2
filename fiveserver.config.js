@@ -1,4 +1,4 @@
 // fiveserver.config.js
 module.exports = {
-    php: "/usr/bin/php"              // macOS/Ubuntu
+    php: "/opt/homebrew/bin/php"              // macOS/Ubuntu
 }

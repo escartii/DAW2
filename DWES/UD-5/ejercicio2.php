@@ -19,7 +19,7 @@
 <body>
     <form method="POST" action="">
     <label for="numero1">Introduce el primer número:</label>
-    <input type="number" name="numero" id="numero" required><br>
+    <input type="text" name="numero" id="numero" required><br>
     </form>
 </body>
 </html>
