@@ -1,0 +1,186 @@
+{
+    // Snippet básico para crear un archivo PHP con encabezado.
+    "Funcion php": {
+        "prefix": "funcionphp",
+        "body": [
+            "function ${1:nombreFuncion}(${2:parametros}) {",
+            "    ${3:// Código de la función}",
+            "",
+            "    return ${4:resultado};",
+            "}"
+        ],
+        "description": "Crea una función PHP básica."
+    },
+    // Snippet básico para crear un archivo PHP con encabezado.
+    "Plantilla de archivo PHP": {
+        "prefix": "phpfile",
+        "body": [
+            "<?php",
+            "",
+            "/**",
+            " * @Author: Álvaro Escartí",
+			// " * @Date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+            " */",
+            "",
+			"",
+			"",
+            "",
+            "",
+            "?>"
+        ],
+        "description": "Crea un archivo PHP con encabezado."
+    },
+
+    // Snippet para definir una función PHP rápidamente.
+    "Función PHP": {
+        "prefix": "phpfunction",
+        "body": [
+            "function ${1:nombreFuncion}(${2:parametros}) {",
+            "    ${3:// Código de la función}",
+            "    return ${4:resultado};",
+            "}"
+        ],
+        "description": "Crea una función PHP rápidamente."
+    },
+
+    // Snippet para crear una estructura de clase en PHP.
+    "Clase PHP": {
+        "prefix": "phpclass",
+        "body": [
+            "class ${1:NombreClase} {",
+            "    private ${2:atributo};",
+            "",
+            "    public function __construct(${3:atributos}) {",
+            "        $this->${2:atributo} = ${4:valor};",
+            "    }",
+            "",
+            "    public function ${5:getterSetter}() {",
+            "        return $this->${2:atributo};",
+            "    }",
+            "}"
+        ],
+        "description": "Crea una clase PHP básica."
+    },
+
+    // Snippet para conectarse a una base de datos MySQL en PHP.
+    "Conexión MySQL": {
+        "prefix": "phpmysql",
+        "body": [
+            "<?php",
+            "",
+			"/**",
+            " * @Author: Javier Puertas",
+			//" * @Date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+            " */",
+			"",
+            "$servername = '${1:localhost}';",
+            "$username = '${2:root}';",
+            "$password = '${3:password}';",
+            "$dbname = '${4:myDatabase}';",
+            "",
+            "// Crear conexión",
+            "$conn = new mysqli($servername, $username, $password, $dbname);",
+            "",
+            "// Verificar conexión",
+            "if ($conn->connect_error) {",
+            "    die('Conexión fallida: ' . $conn->connect_error);",
+            "} else {",
+            "    echo 'Conectado correctamente';",
+            "}",
+            "",
+            "?>"
+        ],
+        "description": "Snippet para conectarse a una base de datos MySQL."
+    },
+
+    // Snippet para hacer un bucle foreach en PHP.
+    "Bucle foreach PHP": {
+        "prefix": "phpforeach",
+        "body": [
+            "<?php",
+            "",
+            "foreach (${1:array} as ${2:clave} => ${3:valor}) {",
+            "    ${4:// Código a ejecutar dentro del bucle}",
+            "}",
+            "",
+            "?>"
+        ],
+        "description": "Crea un bucle foreach rápidamente."
+    },
+
+    // Snippet para ejecutar un bloque try-catch en PHP.
+    "Try Catch PHP": {
+        "prefix": "phptrycatch",
+        "body": [
+            "try {",
+            "    ${1:// Código que puede lanzar una excepción}",
+            "} catch (${2:Exception} $e) {",
+            "    echo 'Error: ' . $e->getMessage();",
+            "}"
+        ],
+        "description": "Estructura try-catch en PHP."
+    },
+
+    // Snippet básico de función en JavaScript.
+    "Función JavaScript": {
+        "prefix": "jsfunction",
+        "body": [
+            "function ${1:nombreFuncion}(${2:parametros}) {",
+            "    ${3:// Código de la función}",
+            "    return ${4:resultado};",
+            "}"
+        ],
+        "description": "Crea una función básica en JavaScript."
+    },
+
+    // Snippet para crear un arrow function en JavaScript.
+    "Arrow Function JS": {
+        "prefix": "arrowfunction",
+        "body": [
+            "const ${1:nombreFuncion} = (${2:parametros}) => {",
+            "    ${3:// Código de la función}",
+            "};"
+        ],
+        "description": "Crea una arrow function en JavaScript."
+    },
+
+    // Snippet para hacer un bucle for en JavaScript.
+    "Bucle for JS": {
+        "prefix": "jsforloop",
+        "body": [
+            "for (let i = 0; i < ${1:longitud}; i++) {",
+            "    ${2:// Código dentro del bucle}",
+            "}"
+        ],
+        "description": "Crea un bucle for en JavaScript."
+    },
+
+    // Snippet para manejo de promesas en JavaScript con async/await.
+    "Async Await JS": {
+        "prefix": "asyncawait",
+        "body": [
+            "const ${1:nombreFuncion} = async () => {",
+            "    try {",
+            "        const response = await fetch('${2:url}');",
+            "        const data = await response.json();",
+            "        console.log(data);",
+            "    } catch (error) {",
+            "        console.error('Error:', error);",
+            "    }",
+            "};"
+        ],
+        "description": "Manejo de promesas en JavaScript con async/await."
+    },
+
+    // Snippet para una estructura básica de eventos en JavaScript.
+    "Manejador de eventos JS": {
+        "prefix": "jsevento",
+        "body": [
+            "document.querySelector('${1:selector}').addEventListener('${2:evento}', (e) => {",
+            "    e.preventDefault();",
+            "    ${3:// Código del manejador de eventos}",
+            "});"
+        ],
+        "description": "Crea un manejador de eventos en JavaScript."
+    }
+}
