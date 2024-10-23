@@ -414,8 +414,6 @@ botonCambiarModo.addEventListener('click', () => {
 inicializarJuego();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Resto del código
-
     // Llenar la lista de campeones
     const campeonesList = document.getElementById('campeones-list');
     campeones.forEach(campeon => {
