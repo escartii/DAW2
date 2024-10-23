@@ -7,9 +7,6 @@
 </head>
 <body>
     <h1>LoL Wordle</h1>
-    <div class="Animacion">
-        <img src="./img/Icon.png" alt="Icono de la aplicación" class="Icono">
-    </div>
     <button id="cambiar-modo">Cambiar a Modo Oscuro</button>
     <div>
         <br><br>
@@ -23,7 +20,6 @@
     <div id="tablero-juego"></div>
     <p id="retroalimentacion"></p>
 
-    <!-- Teclado virtual -->
     <div id="teclado">
         <div class="fila-teclas">
             <button class="tecla">Q</button>
@@ -49,6 +45,7 @@
             <button class="tecla">L</button>
         </div>
         <div class="fila-teclas">
+            <button class="tecla especial grande">ENTER</button>
             <button class="tecla">Z</button>
             <button class="tecla">X</button>
             <button class="tecla">C</button>
@@ -56,18 +53,15 @@
             <button class="tecla">B</button>
             <button class="tecla">N</button>
             <button class="tecla">M</button>
+            <button class="tecla especial grande">⌫</button>
         </div>
     </div>
     <div id="contenido-juego">
-        <!-- Contenido del juego existente -->
         <button id="mostrar-lista">Mostrar/Ocultar Lista de Campeones</button>
         <div id="lista-campeones" class="oculto">
             <h2>Lista de Campeones</h2>
-            <ul id="campeones-list">
-                <!-- Lista de campeones -->
-            </ul>
+            <ul id="campeones-list"></ul>
         </div>
-        <!-- Resto del contenido del juego -->
     </div>
     <script src="app.js"></script>
 </body>

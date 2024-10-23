@@ -43,7 +43,7 @@ body {
 }
 
 .casilla.presente {
-    background-color: #c9b458;
+    background-color: #c9b458; /* Amarillo para letras presentes */
     border-color: #c9b458;
     color: white;
 }
@@ -118,7 +118,7 @@ body {
 }
 
 .tecla.presente {
-    background-color: a#c9b458; /* Amarillo para letras presentes */
+    background-color: #c9b458; /* Amarillo para letras presentes */
     color: white;
 }
 
@@ -134,10 +134,11 @@ body {
 }
 
 .tecla.grande {
-    width: 70px; /* Un poco más grande para teclas como "ENVIAR" y "BACKSPACE" */
+    width: 70px; /* Un poco más grande para teclas como "ENTER" y "BACKSPACE" */
     background-color: #4a4a4d;
     color: white;
 }
+
 #lista-campeones {
     background-color: var(--color-fondo-tablero);
     padding: 15px;
@@ -151,7 +152,6 @@ body {
 #lista-campeones.oculto {
     display: none; /* Para ocultar la lista inicialmente */
 }
-
 
 #lista-campeones h2 {
     font-size: 1.3em;

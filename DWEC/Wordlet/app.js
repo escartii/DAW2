@@ -1,5 +1,3 @@
-// app.js
-
 const campeones = [
     { name: "Aatrox", role: "Luchador, AD" },
     { name: "Ahri", role: "Maga, AP" },
@@ -214,11 +212,17 @@ function inicializarTablero() {
 // Mostrar la imagen del campeón
 function mostrarImagenCampeon() {
     const imagenCampeon = document.getElementById('imagen-campeon');
-    const nombreImagen = capitalizar(campeonElegido); // Nombre ya sanitizado
+    const nombreImagen = capitalizar(campeonElegidoObj.name); // Nombre original con mayúsculas y espacios
     imagenCampeon.src = `img/${nombreImagen}.png`; // Asegúrate de que las imágenes sigan este formato
     imagenCampeon.style.display = "block"; // Mostrar la imagen
     imagenCampeon.style.margin = "0 auto"; // Centrar la imagen horizontalmente
+}
 
+// Función para capitalizar el nombre correctamente (manteniendo el formato original)
+function capitalizar(nombre) {
+    return nombre.split(' ').map(palabra => 
+        palabra.charAt(0).toUpperCase() + palabra.slice(1)
+    ).join(' ');
 }
 
 // Actualizar el teclado virtual
@@ -226,9 +230,9 @@ const teclas = document.querySelectorAll('.tecla');
 teclas.forEach(tecla => {
     tecla.addEventListener('click', () => {
         const valorTecla = tecla.textContent.toLowerCase();
-        if (valorTecla === 'enter' || valorTecla === 'enter') { // Para cubrir "ENTER"
+        if (valorTecla === 'enter') { // Manejar "ENTER"
             manejarIntento();
-        } else if (valorTecla === '⌫' || valorTecla === 'backspace') { // Para cubrir "⌫"
+        } else if (valorTecla === '⌫' || valorTecla === 'backspace') { // Manejar "BACKSPACE"
             eliminarLetra();
         } else {
             agregarLetra(valorTecla);
@@ -341,11 +345,6 @@ function actualizarTecla(letra, clase) {
     });
 }
 
-// Capitalizar la primera letra (manteniendo el formato original)
-function capitalizar(palabra) {
-    return palabra.charAt(0).toUpperCase() + palabra.slice(1);
-}
-
 // Función para reiniciar la partida
 function iniciarNuevaPartida() {
     // Reiniciar el tablero
@@ -430,37 +429,4 @@ document.addEventListener('DOMContentLoaded', () => {
     botonMostrarLista.addEventListener('click', () => {
         listaCampeones.classList.toggle('oculto');
     });
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Seleccionar el ul donde se mostrarán los campeones
-    const campeonesList = document.getElementById('campeones-list');
-
-    // Añadir todos los campeones a la lista
-    campeones.forEach(campeon => {
-        const listItem = document.createElement('li');
-        listItem.textContent = campeon.name;
-        campeonesList.appendChild(listItem);
-    });
-
-    // Mostrar la imagen con animación
-    const animacion = document.querySelector('.Animacion');
-    const contenidoPagina = document.getElementById('contenido-juego');
-
-    animacion.style.opacity = 0;
-    animacion.style.transition = 'opacity 1s ease-in-out';
-
-    setTimeout(() => {
-        animacion.style.opacity = 1;
-    }, 100);
-
-    setTimeout(() => {
-        animacion.style.opacity = 0;
-
-        setTimeout(() => {
-            animacion.style.display = 'none';
-            contenidoPagina.style.display = 'block';
-        }, 500);
-    }, 1500);
 });
