@@ -214,10 +214,11 @@ function inicializarTablero() {
 // Mostrar la imagen del campeón
 function mostrarImagenCampeon() {
     const imagenCampeon = document.getElementById('imagen-campeon');
-    const nombreImagen = campeonElegido; // Nombre ya sanitizado
-    imagenCampeon.src = `./img/${nombreImagen}.png`; // Asegúrate de que las imágenes sigan este formato
+    const nombreImagen = capitalizar(campeonElegido); // Nombre ya sanitizado
+    imagenCampeon.src = `img/${nombreImagen}.png`; // Asegúrate de que las imágenes sigan este formato
     imagenCampeon.style.display = "block"; // Mostrar la imagen
     imagenCampeon.style.margin = "0 auto"; // Centrar la imagen horizontalmente
+
 }
 
 // Actualizar el teclado virtual
