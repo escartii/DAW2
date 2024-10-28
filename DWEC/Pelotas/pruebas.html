@@ -7,7 +7,6 @@
     <title>Juego de las Pelotas</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&display=swap');
-
         :root {
             --color-primario: #4CAF50;
             --color-secundario: #ffffff;
@@ -20,6 +19,8 @@
             --sombra: rgba(0, 0, 0, 0.1) 0px 4px 6px;
             --radio-borde: 8px;
             --transicion: 0.3s ease;
+            --overlay-color: rgba(231, 76, 60, 0.6); /* Color rojo semitransparente */
+            --icon-color: #ffffff;
         }
 
         * {
@@ -75,6 +76,7 @@
             font-weight: 700;
             color: var(--color-texto);
             margin-bottom: 5px;
+            display: block;
         }
 
         .configuracion select,
@@ -178,6 +180,34 @@
             font-weight: 700;
             color: var(--color-primario);
             margin-top: 10px;
+        }
+
+        /* Clase para marcar pelotas faltantes */
+        .marcar {
+            position: relative;
+            opacity: 0.7; /* Reduce la opacidad para diferenciar */
+            animation: shake 0.5s;
+            animation-iteration-count: infinite;
+        }
+
+        .marcar::after {
+            content: '⚠️'; /* Icono de advertencia */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: var(--color-primario);
+            pointer-events: none; /* Permite clics detrás del icono */
+        }
+
+        /* Animación de Rebote */
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0, 0); }
         }
 
         /* Responsivo para pantallas pequeñas */
@@ -385,12 +415,37 @@
         function finDelJuego(ganado) {
             juegoEnCurso = false;
             clearInterval(intervaloTiempo);
+            const modo = document.getElementById('modo').value;
+            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
+
             if (ganado) {
                 document.getElementById('mensaje').textContent = `¡Fin del juego! Has tardado ${tiempo} segundos.`;
                 document.getElementById('mensaje').style.color = 'var(--color-primario)';
             } else {
                 document.getElementById('mensaje').textContent = `¡Has perdido! Has seleccionado 3 pelotas incorrectas.`;
                 document.getElementById('mensaje').style.color = 'var(--color-rojo)';
+                marcarPelotasFaltantes();
+            }
+        }
+
+        function marcarPelotasFaltantes() {
+            const divJuego = document.getElementById('juego');
+            const pelotas = divJuego.getElementsByClassName('pelota');
+            const modo = document.getElementById('modo').value;
+            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
+
+            for (let pelota of pelotas) {
+                // Solo marcar las pelotas que no han sido eliminadas
+                if (!pelota.classList.contains('ocultar')) {
+                    if (modo === 'color') {
+                        if (colorSeleccionado && pelota.classList.contains(colorSeleccionado.value)) {
+                            pelota.classList.add('marcar');
+                        }
+                    } else if (modo === 'todas') {
+                        // En modo "Eliminar todas las pelotas", marcar todas las pelotas restantes
+                        pelota.classList.add('marcar');
+                    }
+                }
             }
         }
     </script>

@@ -1,0 +1,112 @@
+* {
+    box-sizing: border-box;
+  }
+  body {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+}
+
+.game {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.initDiv {
+  background-color: #333;
+  width: 100%;
+  height: 100vh;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.initDiv::after {
+  content: "Haz clic para comenzar";
+  font-size: 2em;
+  color: #fff;
+}
+
+.cell {
+  width: 5.7vw;
+  height: 6vw;
+  border: 1px solid #ccc;
+  margin: 1px;
+  padding: 0;
+  float: left;
+  text-align: center;
+  font-size: 2em;
+  color: black;
+  line-height: 6vw;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s;
+}
+
+.cell:hover {
+  background-color: #e0e0e0;
+}
+
+.cell.dragging {
+  opacity: 0.5;
+}
+
+.cell.over {
+  border: 2px dashed #666;
+}
+
+.color-blue {
+  background-color: #3498db;
+  color: white;
+}
+
+.color-darkred {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.color-ForestGreen {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.color-MediumPurple {
+  background-color: #9b59b6;
+  color: white;
+}
+
+.color-gold {
+  background-color: #f1c40f;
+  color: white;
+}
+
+.color-white {
+  background-color: #fff;
+}
+
+.selectCell {
+  outline: 2px solid #2980b9;
+}
+
+.highlightedCell {
+  background-color: #ecf0f1;
+}
+
+@media only screen and (max-width:550px) {
+  .cell{
+      width: 10vw;
+      height: 13vw;
+      font-size: 4vw;
+      line-height: 13vw;
+  }
+}
