@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de las Pelotas</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1>Juego de las Pelotas</h1>
+    <label for="cantidad">Selecciona el número de pelotas:</label>
+    <select id="cantidad">
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+    </select>
+    <br><br>
+    <label>Modo de juego:</label>
+    <select id="modo">
+        <option value="todas">Eliminar todas las pelotas</option>
+        <option value="color">Eliminar un solo color</option>
+    </select>
+    <br><br>
+    <div id="colorSelect" style="display: none;">
+        <label>Color a eliminar:</label>
+        <input type="radio" name="color" value="rojo">Rojo
+        <input type="radio" name="color" value="verde">Verde
+        <input type="radio" name="color" value="azul">Azul
+    </div>
+    <br>
+    <button onclick="iniciarJuego()">Iniciar Juego</button>
+    <p>Tiempo: <span id="tiempo">0</span> segundos</p>
+    <p>Pelotas eliminadas: <span id="eliminadas">0</span></p>
+    <p id="mensaje"></p>
+    <div id="juego"></div>
+    <script src="./script.js"></script>
+</body>
+</html>

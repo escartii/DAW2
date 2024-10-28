@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de las Pelotas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&display=swap');
+
+        :root {
+            --color-primario: #4CAF50;
+            --color-secundario: #ffffff;
+            --color-fondo: #f9f9f9;
+            --color-borde: #ddd;
+            --color-texto: #333;
+            --color-rojo: #e74c3c;
+            --color-verde: #2ecc71;
+            --color-azul: #3498db;
+            --sombra: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+            --radio-borde: 8px;
+            --transicion: 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Kameron', serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-fondo);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1 {
+            background-color: var(--color-primario);
+            color: var(--color-secundario);
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            margin: 0;
+            box-shadow: var(--sombra);
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: var(--color-secundario);
+            border-right: 1px solid var(--color-borde);
+            padding: 20px;
+            box-shadow: var(--sombra);
+            overflow-y: auto;
+        }
+
+        .main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .configuracion label {
+            font-weight: 700;
+            color: var(--color-texto);
+            margin-bottom: 5px;
+        }
+
+        .configuracion select,
+        .configuracion input[type="radio"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            transition: border-color var(--transicion);
+        }
+
+        .configuracion select:focus,
+        .configuracion input[type="radio"]:focus {
+            border-color: var(--color-primario);
+            outline: none;
+        }
+
+        .configuracion button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--color-primario);
+            color: var(--color-secundario);
+            border: none;
+            border-radius: var(--radio-borde);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color var(--transicion);
+        }
+
+        .configuracion button:hover {
+            background-color: #45a049;
+        }
+
+        #colorSelect {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #colorSelect label {
+            margin-right: 10px;
+            font-weight: normal;
+        }
+
+        #juego {
+            position: relative;
+            width: 100%;
+            height: 50vh; /* Reducida para mejorar la vista inicial */
+            max-height: 500px;
+            border: 2px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            background-color: var(--color-secundario);
+            box-shadow: var(--sombra);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .pelota {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform var(--transicion), opacity var(--transicion);
+        }
+
+        .pelota:hover {
+            transform: scale(1.2);
+            opacity: 0.8;
+        }
+
+        .ocultar {
+            opacity: 0;
+            transition: opacity var(--transicion);
+            pointer-events: none;
+        }
+
+        .rojo {
+            background-color: var(--color-rojo);
+        }
+
+        .verde {
+            background-color: var(--color-verde);
+        }
+
+        .azul {
+            background-color: var(--color-azul);
+        }
+
+        .stats {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--color-texto);
+        }
+
+        .stats p {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        #mensaje {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-primario);
+            margin-top: 10px;
+        }
+
+        /* Responsivo para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--color-borde);
+            }
+
+            #juego {
+                height: 40vh;
+            }
+        }
+
+        /* Mejoras en accesibilidad */
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Juego de las Pelotas</h1>
+    <div class="container">
+        <div class="sidebar">
+            <div class="configuracion">
+                <label for="cantidad">Número de pelotas:</label>
+                <select id="cantidad">
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                </select>
+
+                <label for="modo">Modo de juego:</label>
+                <select id="modo">
+                    <option value="todas">Eliminar todas las pelotas</option>
+                    <option value="color">Eliminar un solo color</option>
+                </select>
+
+                <div id="colorSelect">
+                    <label>Color a eliminar:</label>
+                    <div>
+                        <input type="radio" name="color" value="rojo" id="colorRojo">
+                        <label for="colorRojo">Rojo</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="color" value="verde" id="colorVerde">
+                        <label for="colorVerde">Verde</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="color" value="azul" id="colorAzul">
+                        <label for="colorAzul">Azul</label>
+                    </div>
+                </div>
+
+                <button onclick="iniciarJuego()">Iniciar Juego</button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="stats">
+                <p>Tiempo: <span id="tiempo">0</span> segundos</p>
+                <p>Pelotas eliminadas: <span id="eliminadas">0</span></p>
+            </div>
+            <p id="mensaje"></p>
+            <div id="juego"></div>
+        </div>
+    </div>
+
+    <script>
+        let tiempo = 0;
+        let pelotasEliminadas = 0;
+        let totalPelotasColor = 0;
+        let errores = 0;
+        let juegoEnCurso = false;
+        let intervaloTiempo;
+
+        document.getElementById('modo').addEventListener('change', function () {
+            const colorSelect = document.getElementById('colorSelect');
+            if (this.value === 'color') {
+                colorSelect.style.display = 'block';
+            } else {
+                colorSelect.style.display = 'none';
+            }
+        });
+
+        function iniciarJuego() {
+            // Reiniciar variables
+            tiempo = 0;
+            pelotasEliminadas = 0;
+            totalPelotasColor = 0;
+            errores = 0;
+            juegoEnCurso = true;
+
+            // Actualizar la interfaz
+            document.getElementById('tiempo').textContent = tiempo;
+            document.getElementById('eliminadas').textContent = pelotasEliminadas;
+            document.getElementById('mensaje').textContent = '';
+
+            // Limpiar cualquier intervalo previo
+            if (intervaloTiempo) {
+                clearInterval(intervaloTiempo);
+            }
+
+            // Iniciar el contador de tiempo
+            intervaloTiempo = setInterval(function () {
+                if (juegoEnCurso) {
+                    tiempo++;
+                    document.getElementById('tiempo').textContent = tiempo;
+                }
+            }, 1000);
+
+            // Crear las pelotas
+            crearPelotas();
+        }
+
+        function crearPelotas() {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const modo = document.getElementById('modo').value;
+            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
+            const divJuego = document.getElementById('juego');
+
+            divJuego.innerHTML = '';
+
+            for (let i = 0; i < cantidad; i++) {
+                const pelota = document.createElement('div');
+                pelota.classList.add('pelota');
+
+                const size = Math.floor(Math.random() * 40) + 20; // Tamaño entre 20px y 60px
+                pelota.style.width = `${size}px`;
+                pelota.style.height = `${size}px`;
+
+                // Posicionar aleatoriamente dentro del área de juego
+                const maxLeft = divJuego.clientWidth - size;
+                const maxTop = divJuego.clientHeight - size;
+                pelota.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
+                pelota.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+
+                if (modo === 'color' && colorSeleccionado) {
+                    if (i < Math.ceil(cantidad / 2)) { // Asigna aproximadamente la mitad de las pelotas al color seleccionado
+                        pelota.classList.add(colorSeleccionado.value);
+                        totalPelotasColor++;
+                    } else {
+                        pelota.style.backgroundColor = generarColorAleatorio();
+                    }
+                } else {
+                    pelota.style.backgroundColor = generarColorAleatorio();
+                }
+
+                pelota.onclick = function () {
+                    if (juegoEnCurso) {
+                        if (modo === 'color' && colorSeleccionado && pelota.classList.contains(colorSeleccionado.value)) {
+                            eliminarPelota(pelota, true);
+                        } else if (modo === 'todas') {
+                            eliminarPelota(pelota, true);
+                        } else if (modo === 'color' && !pelota.classList.contains(colorSeleccionado.value)) {
+                            eliminarPelota(pelota, false);
+                        }
+                        document.getElementById('eliminadas').textContent = pelotasEliminadas;
+                    }
+                };
+
+                divJuego.appendChild(pelota);
+            }
+        }
+
+        function eliminarPelota(pelota, correcto) {
+            if (correcto) {
+                pelota.classList.add('ocultar');
+                pelotasEliminadas++;
+                if (pelota.classList.contains('rojo') || pelota.classList.contains('verde') || pelota.classList.contains('azul')) {
+                    totalPelotasColor--;
+                }
+
+                const modo = document.getElementById('modo').value;
+                const cantidad = parseInt(document.getElementById('cantidad').value);
+
+                if (modo === 'color') {
+                    if (totalPelotasColor === 0) {
+                        finDelJuego(true);
+                    }
+                } else if (modo === 'todas') {
+                    if (pelotasEliminadas === cantidad) {
+                        finDelJuego(true);
+                    }
+                }
+            } else {
+                errores++;
+                if (errores === 3) {
+                    finDelJuego(false);
+                }
+            }
+        }
+
+        function generarColorAleatorio() {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        }
+
+        function finDelJuego(ganado) {
+            juegoEnCurso = false;
+            clearInterval(intervaloTiempo);
+            if (ganado) {
+                document.getElementById('mensaje').textContent = `¡Fin del juego! Has tardado ${tiempo} segundos.`;
+                document.getElementById('mensaje').style.color = 'var(--color-primario)';
+            } else {
+                document.getElementById('mensaje').textContent = `¡Has perdido! Has seleccionado 3 pelotas incorrectas.`;
+                document.getElementById('mensaje').style.color = 'var(--color-rojo)';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -5,39 +5,39 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Compruebo que sea un número ENTERO
-    if (is_int($_POST["numero1"]) && is_int($_POST["numero2"])) {
-        $numero1 = $_POST["numero1"];
-        $numero2 = $_POST["numero2"];
+    // Verifico que los valores sean números
+    if (ctype_digit($_POST["numero1"]) && ctype_digit($_POST["numero2"])) {
+        $numero1 = (int)$_POST["numero1"];
+        $numero2 = (int)$_POST["numero2"];
         $operaciones = $_POST["operacion"];
         
         foreach ($operaciones as $operacion) {
             switch ($operacion) {
                 case "suma":
                     $resultado = $numero1 + $numero2;
-                    echo ("La suma de: " . $numero1 . " + " . $numero2 . " es: " . $resultado . "\n");
+                    echo ("La suma de: " . $numero1 . " + " . $numero2 . " es: " . $resultado . "<br>");
                     break;
                 case "resta":
                     $resultado = $numero1 - $numero2;
-                    echo ("La resta de: " . $numero1 . " - " . $numero2 . " es: " . $resultado . "\n");
+                    echo ("La resta de: " . $numero1 . " - " . $numero2 . " es: " . $resultado . "<br>");
                     break;
                 case "multiplicación":
                     $resultado = $numero1 * $numero2;
-                    echo ("La multiplicación de: " . $numero1 . " * " . $numero2 . " es: " . $resultado . "\n");
+                    echo ("La multiplicación de: " . $numero1 . " * " . $numero2 . " es: " . $resultado . "<br>");
                     break;
                 case "división":
                     if ($numero2 != 0) {
                         $resultado = $numero1 / $numero2;
-                        echo ("La división de: " . $numero1 . " / " . $numero2 . " es: " . $resultado . "\n");
+                        echo ("La división de: " . $numero1 . " / " . $numero2 . " es: " . $resultado . "<br>");
                     } else {
-                        echo ("No se puede dividir entre cero.\n");
+                        echo ("No se puede dividir entre cero.<br>");
                     }
                     break;
-                }
             }
-        } else {
-            echo ("No se puede realizar la operación. Asegúrate de introducir números válidos.\n");
         }
+    } else {
+        echo ("No se puede realizar la operación. Asegúrate de introducir números válidos.<br>");
+    }
 }
 ?>
 
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora</title>
+    <title>Álvaro Escartí</title>
 </head>
 
 <body>
