@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de las Pelotas</title>
+    <title>Juego de las Calabazas - Halloween</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+        /* Variables */
         :root {
-            --color-primario: #4CAF50;
-            --color-secundario: #ffffff;
-            --color-fondo: #f9f9f9;
-            --color-borde: #ddd;
-            --color-texto: #333;
-            --color-rojo: #e74c3c;
-            --color-verde: #2ecc71;
-            --color-azul: #3498db;
-            --sombra: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+            --color-primario: #FF7518;
+            --color-secundario: #1C1C1C;
+            --color-fondo: #0D0D0D;
+            --color-borde: #444;
+            --color-texto: #F1F1F1;
+            --color-rojo: #FF0000;
+            --color-verde: #00FF00;
+            --color-azul: #0000FF;
+            --sombra: rgba(0, 0, 0, 0.7) 0px 4px 6px;
             --radio-borde: 8px;
             --transicion: 0.3s ease;
-            --overlay-color: rgba(231, 76, 60, 0.6); /* Color rojo semitransparente */
-            --icon-color: #ffffff;
+            --overlay-opacity: 0.6; 
         }
 
         * {
@@ -28,7 +27,7 @@
         }
 
         body {
-            font-family: 'Kameron', serif;
+            font-family: 'Creepster', cursive;
             margin: 0;
             padding: 0;
             background-color: var(--color-fondo);
@@ -36,16 +35,19 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            color: var(--color-texto);
         }
 
         h1 {
             background-color: var(--color-primario);
-            color: var(--color-secundario);
+            color: var(--color-texto);
             width: 100%;
             text-align: center;
             padding: 20px 0;
             margin: 0;
             box-shadow: var(--sombra);
+            font-size: 3em;
+            text-shadow: 2px 2px 5px #000;
         }
 
         .container {
@@ -70,6 +72,8 @@
             flex-direction: column;
             align-items: center;
             overflow-y: auto;
+            background: url('https://i.imgur.com/8Iu3i3F.png') no-repeat center center fixed; /* Fondo temático */
+            background-size: cover;
         }
 
         .configuracion label {
@@ -77,6 +81,7 @@
             color: var(--color-texto);
             margin-bottom: 5px;
             display: block;
+            font-size: 1.2em;
         }
 
         .configuracion select,
@@ -86,6 +91,8 @@
             margin-bottom: 15px;
             border: 1px solid var(--color-borde);
             border-radius: var(--radio-borde);
+            background-color: #2E2E2E;
+            color: var(--color-texto);
             transition: border-color var(--transicion);
         }
 
@@ -103,12 +110,13 @@
             border: none;
             border-radius: var(--radio-borde);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1.2em;
             transition: background-color var(--transicion);
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
         }
 
         .configuracion button:hover {
-            background-color: #45a049;
+            background-color: #e06600;
         }
 
         #colorSelect {
@@ -119,16 +127,17 @@
         #colorSelect label {
             margin-right: 10px;
             font-weight: normal;
+            font-size: 1em;
         }
 
         #juego {
             position: relative;
             width: 100%;
-            height: 50vh; /* Reducida para mejorar la vista inicial */
+            height: 50vh;
             max-height: 500px;
             border: 2px solid var(--color-borde);
             border-radius: var(--radio-borde);
-            background-color: var(--color-secundario);
+            background-color: #1C1C1C; /* Fondo oscuro para el área de juego */
             box-shadow: var(--sombra);
             overflow: hidden;
             margin-top: 20px;
@@ -136,9 +145,44 @@
 
         .pelota {
             position: absolute;
-            border-radius: 50%;
+            width: 40px; /* Tamaño de la imagen */
+            height: 40px;
             cursor: pointer;
             transition: transform var(--transicion), opacity var(--transicion);
+        }
+
+        .pelota img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+        }
+
+        /* Diferentes colores para la calabaza usando superposición */
+        .rojo::after,
+        .verde::after,
+        .azul::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none; /* Permite clics a través de la superposición */
+            opacity: var(--overlay-opacity);
+        }
+
+        .rojo::after {
+            background-color: var(--color-rojo);
+        }
+
+        .verde::after {
+            background-color: var(--color-verde);
+        }
+
+        .azul::after {
+            background-color: var(--color-azul);
         }
 
         .pelota:hover {
@@ -152,18 +196,6 @@
             pointer-events: none;
         }
 
-        .rojo {
-            background-color: var(--color-rojo);
-        }
-
-        .verde {
-            background-color: var(--color-verde);
-        }
-
-        .azul {
-            background-color: var(--color-azul);
-        }
-
         .stats {
             text-align: center;
             margin-bottom: 20px;
@@ -172,17 +204,18 @@
 
         .stats p {
             margin: 5px 0;
-            font-size: 18px;
+            font-size: 1.2em;
         }
 
         #mensaje {
-            font-size: 20px;
+            font-size: 1.5em;
             font-weight: 700;
             color: var(--color-primario);
             margin-top: 10px;
+            text-shadow: 2px 2px 4px #000;
         }
 
-        /* Clase para marcar pelotas faltantes */
+        /* Clase para marcar calabazas faltantes */
         .marcar {
             position: relative;
             opacity: 0.7; /* Reduce la opacidad para diferenciar */
@@ -191,7 +224,7 @@
         }
 
         .marcar::after {
-            content: '⚠️'; /* Icono de advertencia */
+            content: '🎃'; /* Icono de calabaza */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -225,21 +258,39 @@
             #juego {
                 height: 40vh;
             }
+
+            h1 {
+                font-size: 2em;
+                color: white;
+            }
         }
 
         /* Mejoras en accesibilidad */
         input[type="radio"] {
             margin-right: 5px;
         }
+
+        /* Fondo decorativo de Halloween */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imgur.com/8Iu3i3F.png') repeat; /* Puedes usar una imagen de fondo temática */
+            opacity: 0.1;
+            z-index: -1;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Juego de las Pelotas</h1>
+    <h1>Juego de las Calabazas</h1>
     <div class="container">
         <div class="sidebar">
             <div class="configuracion">
-                <label for="cantidad">Número de pelotas:</label>
+                <label for="cantidad">Número de calabazas:</label>
                 <select id="cantidad">
                     <option value="10">10</option>
                     <option value="50">50</option>
@@ -250,7 +301,7 @@
 
                 <label for="modo">Modo de juego:</label>
                 <select id="modo">
-                    <option value="todas">Eliminar todas las pelotas</option>
+                    <option value="todas">Eliminar todas las calabazas</option>
                     <option value="color">Eliminar un solo color</option>
                 </select>
 
@@ -276,7 +327,7 @@
         <div class="main">
             <div class="stats">
                 <p>Tiempo: <span id="tiempo">0</span> segundos</p>
-                <p>Pelotas eliminadas: <span id="eliminadas">0</span></p>
+                <p>Calabazas eliminadas: <span id="eliminadas">0</span></p>
             </div>
             <p id="mensaje"></p>
             <div id="juego"></div>
@@ -285,11 +336,12 @@
 
     <script>
         let tiempo = 0;
-        let pelotasEliminadas = 0;
-        let totalPelotasColor = 0;
+        let calabazasEliminadas = 0;
+        let totalCalabazasColor = 0;
         let errores = 0;
         let juegoEnCurso = false;
         let intervaloTiempo;
+        let cantidadSeleccionada = 0;
 
         document.getElementById('modo').addEventListener('change', function () {
             const colorSelect = document.getElementById('colorSelect');
@@ -303,14 +355,15 @@
         function iniciarJuego() {
             // Reiniciar variables
             tiempo = 0;
-            pelotasEliminadas = 0;
-            totalPelotasColor = 0;
+            calabazasEliminadas = 0;
+            totalCalabazasColor = 0;
             errores = 0;
             juegoEnCurso = true;
+            cantidadSeleccionada = parseInt(document.getElementById('cantidad').value);
 
             // Actualizar la interfaz
             document.getElementById('tiempo').textContent = tiempo;
-            document.getElementById('eliminadas').textContent = pelotasEliminadas;
+            document.getElementById('eliminadas').textContent = calabazasEliminadas;
             document.getElementById('mensaje').textContent = '';
 
             // Limpiar cualquier intervalo previo
@@ -326,12 +379,12 @@
                 }
             }, 1000);
 
-            // Crear las pelotas
-            crearPelotas();
+            // Crear las calabazas
+            crearCalabazas();
         }
 
-        function crearPelotas() {
-            const cantidad = parseInt(document.getElementById('cantidad').value);
+        function crearCalabazas() {
+            const cantidad = cantidadSeleccionada;
             const modo = document.getElementById('modo').value;
             const colorSeleccionado = document.querySelector('input[name="color"]:checked');
             const divJuego = document.getElementById('juego');
@@ -339,67 +392,64 @@
             divJuego.innerHTML = '';
 
             for (let i = 0; i < cantidad; i++) {
-                const pelota = document.createElement('div');
-                pelota.classList.add('pelota');
+                const calabaza = document.createElement('div');
+                calabaza.classList.add('pelota');
 
-                const size = Math.floor(Math.random() * 40) + 20; // Tamaño entre 20px y 60px
-                pelota.style.width = `${size}px`;
-                pelota.style.height = `${size}px`;
+                // Crear la imagen de la calabaza
+                const img = document.createElement('img');
+                img.src = './calabaza.png'; // Asegúrate de que la ruta es correcta
+                img.alt = 'Calabaza';
+
+                calabaza.appendChild(img);
+
+                // Tamaño aleatorio entre 30px y 60px
+                const size = Math.floor(Math.random() * 30) + 30;
+                calabaza.style.width = `${size}px`;
+                calabaza.style.height = `${size}px`;
 
                 // Posicionar aleatoriamente dentro del área de juego
                 const maxLeft = divJuego.clientWidth - size;
                 const maxTop = divJuego.clientHeight - size;
-                pelota.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
-                pelota.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+                calabaza.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
+                calabaza.style.top = `${Math.floor(Math.random() * maxTop)}px`;
 
-                if (modo === 'color' && colorSeleccionado) {
-                    if (i < Math.ceil(cantidad / 2)) { // Asigna aproximadamente la mitad de las pelotas al color seleccionado
-                        pelota.classList.add(colorSeleccionado.value);
-                        totalPelotasColor++;
-                    } else {
-                        pelota.style.backgroundColor = generarColorAleatorio();
-                    }
+                // Aplicar color mediante clase
+                if (modo === 'color' && colorSeleccionado && i < Math.ceil(cantidad / 2)) {
+                    calabaza.classList.add(colorSeleccionado.value);
+                    totalCalabazasColor++;
                 } else {
-                    pelota.style.backgroundColor = generarColorAleatorio();
+                    const colores = ['rojo', 'verde', 'azul'];
+                    const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
+                    calabaza.classList.add(colorAleatorio);
                 }
 
-                pelota.onclick = function () {
+                // Evento de clic
+                calabaza.onclick = function () {
                     if (juegoEnCurso) {
-                        if (modo === 'color' && colorSeleccionado && pelota.classList.contains(colorSeleccionado.value)) {
-                            eliminarPelota(pelota, true);
+                        if (modo === 'color' && colorSeleccionado && calabaza.classList.contains(colorSeleccionado.value)) {
+                            eliminarCalabaza(calabaza, true);
                         } else if (modo === 'todas') {
-                            eliminarPelota(pelota, true);
-                        } else if (modo === 'color' && !pelota.classList.contains(colorSeleccionado.value)) {
-                            eliminarPelota(pelota, false);
+                            eliminarCalabaza(calabaza, true);
+                        } else if (modo === 'color' && !calabaza.classList.contains(colorSeleccionado.value)) {
+                            eliminarCalabaza(calabaza, false);
                         }
-                        document.getElementById('eliminadas').textContent = pelotasEliminadas;
+                        document.getElementById('eliminadas').textContent = calabazasEliminadas;
                     }
                 };
 
-                divJuego.appendChild(pelota);
+                divJuego.appendChild(calabaza);
             }
         }
 
-        function eliminarPelota(pelota, correcto) {
+        function eliminarCalabaza(calabaza, correcto) {
             if (correcto) {
-                pelota.classList.add('ocultar');
-                pelotasEliminadas++;
-                if (pelota.classList.contains('rojo') || pelota.classList.contains('verde') || pelota.classList.contains('azul')) {
-                    totalPelotasColor--;
+                calabaza.classList.add('ocultar');
+                calabazasEliminadas++;
+                if (document.getElementById('modo').value === 'color') {
+                    totalCalabazasColor--;
                 }
 
-                const modo = document.getElementById('modo').value;
-                const cantidad = parseInt(document.getElementById('cantidad').value);
-
-                if (modo === 'color') {
-                    if (totalPelotasColor === 0) {
-                        finDelJuego(true);
-                    }
-                } else if (modo === 'todas') {
-                    if (pelotasEliminadas === cantidad) {
-                        finDelJuego(true);
-                    }
-                }
+                verificarFinDelJuego();
             } else {
                 errores++;
                 if (errores === 3) {
@@ -408,47 +458,53 @@
             }
         }
 
-        function generarColorAleatorio() {
-            return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        function verificarFinDelJuego() {
+            const modo = document.getElementById('modo').value;
+            if (modo === 'color') {
+                if (totalCalabazasColor === 0) {
+                    finDelJuego(true);
+                }
+            } else if (modo === 'todas') {
+                if (calabazasEliminadas === cantidadSeleccionada) {
+                    finDelJuego(true);
+                }
+            }
         }
 
         function finDelJuego(ganado) {
             juegoEnCurso = false;
             clearInterval(intervaloTiempo);
-            const modo = document.getElementById('modo').value;
-            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
-
-            if (ganado) {
-                document.getElementById('mensaje').textContent = `¡Fin del juego! Has tardado ${tiempo} segundos.`;
-                document.getElementById('mensaje').style.color = 'var(--color-primario)';
-            } else {
-                document.getElementById('mensaje').textContent = `¡Has perdido! Has seleccionado 3 pelotas incorrectas.`;
-                document.getElementById('mensaje').style.color = 'var(--color-rojo)';
-                marcarPelotasFaltantes();
+            const mensaje = ganado 
+                ? `¡Fin del juego! Has tardado ${tiempo} segundos.` 
+                : `¡Has perdido! Has seleccionado 3 calabazas incorrectas.`;
+            document.getElementById('mensaje').textContent = mensaje;
+            document.getElementById('mensaje').style.color = ganado ? 'var(--color-primario)' : 'var(--color-rojo)';
+            
+            if (!ganado) {
+                marcarCalabazasFaltantes();
             }
         }
 
-        function marcarPelotasFaltantes() {
+        function marcarCalabazasFaltantes() {
             const divJuego = document.getElementById('juego');
-            const pelotas = divJuego.getElementsByClassName('pelota');
+            const calabazas = divJuego.getElementsByClassName('pelota');
             const modo = document.getElementById('modo').value;
             const colorSeleccionado = document.querySelector('input[name="color"]:checked');
 
-            for (let pelota of pelotas) {
-                // Solo marcar las pelotas que no han sido eliminadas
-                if (!pelota.classList.contains('ocultar')) {
+            for (let calabaza of calabazas) {
+                // Solo marcar las calabazas que no han sido eliminadas
+                if (!calabaza.classList.contains('ocultar')) {
                     if (modo === 'color') {
-                        if (colorSeleccionado && pelota.classList.contains(colorSeleccionado.value)) {
-                            pelota.classList.add('marcar');
+                        if (colorSeleccionado && calabaza.classList.contains(colorSeleccionado.value)) {
+                            calabaza.classList.add('marcar');
                         }
                     } else if (modo === 'todas') {
-                        // En modo "Eliminar todas las pelotas", marcar todas las pelotas restantes
-                        pelota.classList.add('marcar');
+                        // En modo "Eliminar todas las calabazas", marcar todas las calabazas restantes
+                        calabaza.classList.add('marcar');
                     }
                 }
             }
         }
     </script>
 </body>
-
 </html>
