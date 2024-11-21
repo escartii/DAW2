@@ -80,3 +80,4 @@ document.getElementById('submitGuess').addEventListener('click', function() {
 
 // Cargar los campeones al inicio
 loadChampions();
+                              
