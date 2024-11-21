@@ -1,31 +1,300 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px;
-        }
-        .pelota {
-            position: absolute;
-            border-radius: 50%;
-        }
-        .ocultar {
-            display: none;
-        }
-        .rojo {
-            background-color: red;
-        }
-        .verde {
-            background-color: green;
-        }
-        .azul {
-            background-color: blue;
-        }
-        #juego {
-            position: relative;
-            width: 100%;
-            height: 80vh;
-            border: 1px solid #000;
-            overflow: hidden;
-        }
+/* Variables */
+:root {
+    --color-primario: #FF7518;
+    --color-secundario: #1C1C1C;
+    --color-fondo: #0D0D0D;
+    --color-borde: #444;
+    --color-texto: #F1F1F1;
+    --color-rojo: #FF0000;
+    --color-verde: #00FF00;
+    --color-azul: #0000FF;
+    --sombra: rgba(0, 0, 0, 0.7) 0px 4px 6px;
+    --radio-borde: 8px;
+    --transicion: 0.3s ease;
+    --overlay-opacity: 0.6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Creepster', cursive;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-fondo);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--color-texto);
+}
+
+h1 {
+    background-color: var(--color-primario);
+    color: var(--color-texto);
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    margin: 0;
+    box-shadow: var(--sombra);
+    font-size: 3em;
+    text-shadow: 2px 2px 5px #000;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: var(--color-secundario);
+    border-right: 1px solid var(--color-borde);
+    padding: 20px;
+    box-shadow: var(--sombra);
+    overflow-y: auto;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    background: url('https://i.imgur.com/8Iu3i3F.png') no-repeat center center fixed;
+    /* Fondo temático */
+    background-size: cover;
+}
+
+.configuracion label {
+    font-weight: 700;
+    color: var(--color-texto);
+    margin-bottom: 5px;
+    display: block;
+    font-size: 1.2em;
+}
+
+.configuracion select,
+.configuracion input[type="radio"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    background-color: #2E2E2E;
+    color: var(--color-texto);
+    transition: border-color var(--transicion);
+}
+
+.configuracion select:focus,
+.configuracion input[type="radio"]:focus {
+    border-color: var(--color-primario);
+    outline: none;
+}
+
+.configuracion button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-primario);
+    color: var(--color-secundario);
+    border: none;
+    border-radius: var(--radio-borde);
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: background-color var(--transicion);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.configuracion button:hover {
+    background-color: #e06600;
+}
+
+#colorSelect {
+    display: none;
+    margin-top: 10px;
+}
+
+#colorSelect label {
+    margin-right: 10px;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+#juego {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    max-height: 500px;
+    border: 2px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    background-color: #1C1C1C;
+    /* Fondo oscuro para el área de juego */
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.pelota {
+    position: absolute;
+    width: 40px;
+    /* Tamaño de la imagen */
+    height: 40px;
+    cursor: pointer;
+    transition: transform var(--transicion), opacity var(--transicion);
+}
+
+.pelota img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+}
+
+/* Diferentes colores para la calabaza usando superposición */
+.rojo::after,
+.verde::after,
+.azul::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+    /* Permite clics a través de la superposición */
+    opacity: var(--overlay-opacity);
+}
+
+.rojo::after {
+    background-color: var(--color-rojo);
+}
+
+.verde::after {
+    background-color: var(--color-verde);
+}
+
+.azul::after {
+    background-color: var(--color-azul);
+}
+
+.pelota:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+.ocultar {
+    opacity: 0;
+    transition: opacity var(--transicion);
+    pointer-events: none;
+}
+
+.stats {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-texto);
+}
+
+.stats p {
+    margin: 5px 0;
+    font-size: 1.2em;
+}
+
+#mensaje {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--color-primario);
+    margin-top: 10px;
+    text-shadow: 2px 2px 4px #000;
+}
+
+/* Clase para marcar calabazas faltantes */
+.marcar {
+    position: relative;
+    opacity: 0.7;
+    /* Reduce la opacidad para diferenciar */
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+}
+
+.marcar::after {
+    content: '🎃';
+    /* Icono de calabaza */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: var(--color-primario);
+    pointer-events: none;
+    /* Permite clics detrás del icono */
+}
+
+/* Animación de Rebote */
+@keyframes shake {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-2px, 2px);
+    }
+
+    50% {
+        transform: translate(2px, -2px);
+    }
+
+    75% {
+        transform: translate(-2px, 2px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--color-borde);
+    }
+
+    #juego {
+        height: 40vh;
+    }
+
+    h1 {
+        font-size: 2em;
+        color: white;
+    }
+}
+
+/* Mejoras en accesibilidad */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Fondo decorativo de Halloween */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://i.imgur.com/8Iu3i3F.png') repeat;
+    /* Puedes usar una imagen de fondo temática */
+    opacity: 0.1;
+    z-index: -1;
+}

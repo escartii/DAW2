@@ -1,40 +1,232 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de las Pelotas</title>
-    <link rel="stylesheet" href="./styles.css">
+    <title>Juego de las Calabazas - Halloween</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <h1>Juego de las Pelotas</h1>
-    <label for="cantidad">Selecciona el número de pelotas:</label>
-    <select id="cantidad">
-        <option value="10">10</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-        <option value="200">200</option>
-        <option value="500">500</option>
-    </select>
-    <br><br>
-    <label>Modo de juego:</label>
-    <select id="modo">
-        <option value="todas">Eliminar todas las pelotas</option>
-        <option value="color">Eliminar un solo color</option>
-    </select>
-    <br><br>
-    <div id="colorSelect" style="display: none;">
-        <label>Color a eliminar:</label>
-        <input type="radio" name="color" value="rojo">Rojo
-        <input type="radio" name="color" value="verde">Verde
-        <input type="radio" name="color" value="azul">Azul
+    <h1>Juego de las Calabazas</h1>
+    <div class="container">
+        <div class="sidebar">
+            <div class="configuracion">
+                <label for="cantidad">Número de calabazas:</label>
+                <select id="cantidad">
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                </select>
+
+                <label for="modo">Modo de juego:</label>
+                <select id="modo">
+                    <option value="todas">Eliminar todas las calabazas</option>
+                    <option value="color">Eliminar un solo color</option>
+                </select>
+
+                <div id="colorSelect">
+                    <label>Color a eliminar:</label>
+                    <div>
+                        <input type="radio" name="color" value="rojo" id="colorRojo">
+                        <label for="colorRojo">Rojo</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="color" value="verde" id="colorVerde">
+                        <label for="colorVerde">Verde</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="color" value="azul" id="colorAzul">
+                        <label for="colorAzul">Azul</label>
+                    </div>
+                </div>
+
+                <button onclick="iniciarJuego()">Iniciar Juego</button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="stats">
+                <p>Tiempo: <span id="tiempo">0</span> segundos</p>
+                <p>Calabazas eliminadas: <span id="eliminadas">0</span></p>
+            </div>
+            <p id="mensaje"></p>
+            <div id="juego"></div>
+        </div>
     </div>
-    <br>
-    <button onclick="iniciarJuego()">Iniciar Juego</button>
-    <p>Tiempo: <span id="tiempo">0</span> segundos</p>
-    <p>Pelotas eliminadas: <span id="eliminadas">0</span></p>
-    <p id="mensaje"></p>
-    <div id="juego"></div>
-    <script src="./script.js"></script>
+
+    <script>
+        let tiempo = 0;
+        let calabazasEliminadas = 0;
+        let totalCalabazasColor = 0;
+        let errores = 0;
+        let juegoEnCurso = false;
+        let intervaloTiempo;
+        let cantidadSeleccionada = 0;
+
+        document.getElementById('modo').addEventListener('change', function () {
+            const colorSelect = document.getElementById('colorSelect');
+            if (this.value === 'color') {
+                colorSelect.style.display = 'block';
+            } else {
+                colorSelect.style.display = 'none';
+            }
+        });
+
+        function iniciarJuego() {
+            // Reiniciar variables
+            tiempo = 0;
+            calabazasEliminadas = 0;
+            totalCalabazasColor = 0;
+            errores = 0;
+            juegoEnCurso = true;
+            cantidadSeleccionada = parseInt(document.getElementById('cantidad').value);
+
+            // Actualizar la interfaz
+            document.getElementById('tiempo').textContent = tiempo;
+            document.getElementById('eliminadas').textContent = calabazasEliminadas;
+            document.getElementById('mensaje').textContent = '';
+
+            // Limpiar cualquier intervalo previo
+            if (intervaloTiempo) {
+                clearInterval(intervaloTiempo);
+            }
+
+            // Iniciar el contador de tiempo
+            intervaloTiempo = setInterval(function () {
+                if (juegoEnCurso) {
+                    tiempo++;
+                    document.getElementById('tiempo').textContent = tiempo;
+                }
+            }, 1000);
+
+            // Crear las calabazas
+            crearCalabazas();
+        }
+
+        function crearCalabazas() {
+            const cantidad = cantidadSeleccionada;
+            const modo = document.getElementById('modo').value;
+            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
+            const divJuego = document.getElementById('juego');
+
+            divJuego.innerHTML = '';
+
+            for (let i = 0; i < cantidad; i++) {
+                const calabaza = document.createElement('div');
+                calabaza.classList.add('pelota');
+
+                // Crear la imagen de la calabaza
+                const img = document.createElement('img');
+                img.src = './calabaza.png'; // Asegúrate de que la ruta es correcta
+                img.alt = 'Calabaza';
+
+                calabaza.appendChild(img);
+
+                // Tamaño aleatorio entre 30px y 60px
+                const size = Math.floor(Math.random() * 30) + 30;
+                calabaza.style.width = `${size}px`;
+                calabaza.style.height = `${size}px`;
+
+                // Posicionar aleatoriamente dentro del área de juego
+                const maxLeft = divJuego.clientWidth - size;
+                const maxTop = divJuego.clientHeight - size;
+                calabaza.style.left = `${Math.floor(Math.random() * maxLeft)}px`;
+                calabaza.style.top = `${Math.floor(Math.random() * maxTop)}px`;
+
+                // Aplicar color mediante clase
+                if (modo === 'color' && colorSeleccionado && i < Math.ceil(cantidad / 2)) {
+                    calabaza.classList.add(colorSeleccionado.value);
+                    totalCalabazasColor++;
+                } else {
+                    const colores = ['rojo', 'verde', 'azul'];
+                    const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
+                    calabaza.classList.add(colorAleatorio);
+                }
+
+                // Evento de clic
+                calabaza.onclick = function () {
+                    if (juegoEnCurso) {
+                        if (modo === 'color' && colorSeleccionado && calabaza.classList.contains(colorSeleccionado.value)) {
+                            eliminarCalabaza(calabaza, true);
+                        } else if (modo === 'todas') {
+                            eliminarCalabaza(calabaza, true);
+                        } else if (modo === 'color' && !calabaza.classList.contains(colorSeleccionado.value)) {
+                            eliminarCalabaza(calabaza, false);
+                        }
+                        document.getElementById('eliminadas').textContent = calabazasEliminadas;
+                    }
+                };
+
+                divJuego.appendChild(calabaza);
+            }
+        }
+
+        function eliminarCalabaza(calabaza, correcto) {
+            if (correcto) {
+                calabaza.classList.add('ocultar');
+                calabazasEliminadas++;
+                if (document.getElementById('modo').value === 'color') {
+                    totalCalabazasColor--;
+                }
+
+                verificarFinDelJuego();
+            } else {
+                errores++;
+                if (errores === 3) {
+                    finDelJuego(false);
+                }
+            }
+        }
+
+        function verificarFinDelJuego() {
+            const modo = document.getElementById('modo').value;
+            if (modo === 'color') {
+                if (totalCalabazasColor === 0) {
+                    finDelJuego(true);
+                }
+            } else if (modo === 'todas') {
+                if (calabazasEliminadas === cantidadSeleccionada) {
+                    finDelJuego(true);
+                }
+            }
+        }
+
+        function finDelJuego(ganado) {
+            juegoEnCurso = false;
+            clearInterval(intervaloTiempo);
+            const mensaje = ganado 
+                ? `¡Fin del juego! Has tardado ${tiempo} segundos.` 
+                : `¡Has perdido! Has seleccionado 3 calabazas incorrectas.`;
+            document.getElementById('mensaje').textContent = mensaje;
+            document.getElementById('mensaje').style.color = ganado ? 'var(--color-primario)' : 'var(--color-rojo)';
+            
+            if (!ganado) {
+                marcarCalabazasFaltantes();
+            }
+        }
+
+        function marcarCalabazasFaltantes() {
+            const divJuego = document.getElementById('juego');
+            const calabazas = divJuego.getElementsByClassName('pelota');
+            const modo = document.getElementById('modo').value;
+            const colorSeleccionado = document.querySelector('input[name="color"]:checked');
+
+            for (let calabaza of calabazas) {
+                // Solo marcar las calabazas que no han sido eliminadas
+                if (!calabaza.classList.contains('ocultar')) {
+                    if (modo === 'color') {
+                        if (colorSeleccionado && calabaza.classList.contains(colorSeleccionado.value)) {
+                            calabaza.classList.add('marcar');
+                        }
+                    } else if (modo === 'todas') {
+                        // En modo "Eliminar todas las calabazas", marcar todas las calabazas restantes
+                        calabaza.classList.add('marcar');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
