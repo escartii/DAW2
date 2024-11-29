@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'Arcane';
+    src: url('./Arcane.otf') format('opentype');
+}
+
+body {
+    font-family: 'VT323', monospace;
+    background-color: #000000;
+    color: #00FF00;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Oculta la barra de desplazamiento */
+    background: url('./hacker.gif') center;
+    background: size;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    box-sizing: border-box; /* Incluye el padding en la altura */
+}
+
+.section {
+    width: 49%;
+    border: 2px solid #00FF00;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    background-color: #000000;
+    box-shadow: 0 0 10px 0 #00FF00; /* Sombra brillante alrededor */
+}
+
+.selector-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.selector-list li {
+    background-color: #00FF00;
+    color: #000000;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    box-shadow: 0 0 5px 0 #00FF00; /* Sombra brillante alrededor */
+}
+
+.selector-list li:hover {
+    background-color: #000000;
+    color: #00FF00;
+}
+
+.video-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.control-btn {
+    background-color: #00FF00;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    box-shadow: 0 0 5px 0 #00FF00; /* Sombra brillante alrededor */
+}
+
+.control-btn:hover {
+    background-color: #000000;
+    color: #00FF00;
+}

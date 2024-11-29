@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="DWES">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/DWES/AlvaroEscarti.zip!/" />
+      <root url="jar://$PROJECT_DIR$/DWES/AlvaroEscartiUD3.zip!/" />
+      <root url="jar://$PROJECT_DIR$/DWES/UD-5_AlvaroEscarti.zip!/" />
+      <root url="jar://$PROJECT_DIR$/DWES/UD-4_AlvaroEscarti.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
