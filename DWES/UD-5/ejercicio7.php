@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -16,53 +17,75 @@ function calcularPrecio($tiempoLlamada) {
     }
 }
 
+$mensajes = []; // Array para almacenar mensajes de error o resultados
+$total = 0; // Variable para almacenar el total de las llamadas
+
 // Procesar el formulario cuando se envíe
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Inicializar un array para guardar los tiempos de las 5 llamadas
-    $total = 0;
+    $tiemposLlamadas = [];
+
+    // Validar cada una de las 5 llamadas
     for ($i = 1; $i <= 5; $i++) {
-        // Verificar que el campo de la llamada existe en $_POST antes de acceder a él
-        if (isset($_POST["tiempoLlamada$i"])) {
-            $tiempoLlamada = (float)$_POST["tiempoLlamada$i"];
-            // Calcular el precio de la llamada y sumarlo al total
-            $total += calcularPrecio($tiempoLlamada);
+        $campo = "tiempoLlamada$i";
+        if (isset($_POST[$campo])) {
+            $tiempoLlamada = trim($_POST[$campo]);
+
+            // Verificar que el campo no esté vacío
+            if ($tiempoLlamada === '') {
+                $mensajes[] = "El campo para la llamada $i está vacío. Por favor, introduce la duración.";
+            } elseif (!is_numeric($tiempoLlamada)) {
+                $mensajes[] = "El valor para la llamada $i no es un número válido.";
+            } elseif ($tiempoLlamada < 0) {
+                $mensajes[] = "El tiempo para la llamada $i no puede ser negativo.";
+            } else {
+                // Guardar el tiempo válido
+                $tiemposLlamadas[$i] = (float)$tiempoLlamada;
+            }
+        } else {
+            $mensajes[] = "El campo para la llamada $i no está definido.";
         }
     }
 
-   echo "El precio total de las llamadas es: $total euros";
+    // Si no hay errores, calcular el total
+    if (empty($mensajes)) {
+        foreach ($tiemposLlamadas as $tiempo) {
+            $total += calcularPrecio($tiempo);
+        }
+        // Formatear el total a dos decimales
+        $total = number_format($total, 2);
+        $mensajes[] = "El precio total de las llamadas es: $total euros.";
+    }
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Llamadas</title>
+    <title>Álvaro Escartí</title>
 </head>
-
 <body>
     <h1>Calculadora de Llamadas Telefónicas</h1>
+
+    <?php if (!empty($mensajes)): ?>
+        <div>
+            <?php foreach ($mensajes as $mensaje): ?>
+                <p><?php echo htmlspecialchars($mensaje); ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="">
-        <label for="tiempoLlamada1">Duración de la llamada 1 (en minutos):</label>
-        <input type="number" id="tiempoLlamada1" name="tiempoLlamada1" min="0" step="0.1" required><br><br>
-
-        <label for="tiempoLlamada2">Duración de la llamada 2 (en minutos):</label>
-        <input type="number" id="tiempoLlamada2" name="tiempoLlamada2" min="0" step="0.1" required><br><br>
-
-        <label for="tiempoLlamada3">Duración de la llamada 3 (en minutos):</label>
-        <input type="number" id="tiempoLlamada3" name="tiempoLlamada3" min="0" step="0.1" required><br><br>
-
-        <label for="tiempoLlamada4">Duración de la llamada 4 (en minutos):</label>
-        <input type="number" id="tiempoLlamada4" name="tiempoLlamada4" min="0" step="0.1" required><br><br>
-
-        <label for="tiempoLlamada5">Duración de la llamada 5 (en minutos):</label>
-        <input type="number" id="tiempoLlamada5" name="tiempoLlamada5" min="0" step="0.1" required><br><br>
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+            <label for="tiempoLlamada<?php echo $i; ?>">Duración de la llamada <?php echo $i; ?> (en minutos):</label>
+            <input type="number" id="tiempoLlamada<?php echo $i; ?>" name="tiempoLlamada<?php echo $i; ?>" min="0" step="0.1"
+                value="<?php echo isset($_POST["tiempoLlamada$i"]) ? htmlspecialchars($_POST["tiempoLlamada$i"]) : ''; ?>">
+            <br><br>
+        <?php endfor; ?>
 
         <input type="submit" value="Calcular Total">
     </form>
 </body>
-
 </html>
