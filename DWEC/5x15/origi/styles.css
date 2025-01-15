@@ -1,177 +1,215 @@
+:root {
+  
+  /* Main colors */
+  --background-color: rgb(57, 57, 57);
+  --text-color: white;
+  --button-bg-color: #4CAF50;
+  --button-text-color: white;
+  --cell-text-color: black;
+  --cell-text-shadow-color: #DDDDDD;
+  
+  /* Specific colors */
+  --select-cell-color: Aquamarine;
+  --highlighted-cell-color: black;
+  --newgame-bg-color: MediumPurple;
+  --column3-text-color: white;
+  
+  /* Additional color palette */
+  --color-white-bg: white;
+  --color-blue-bg: #3498db;
+  --color-darkred-bg: #e74c3c;
+  --color-forestgreen-bg: #2ecc71;
+  --color-mediumpurple-bg: #9b59b6;
+  --color-gold-bg: #f1c40f;
+}
+
 * {
-    box-sizing: border-box;
-  }
-  body {
-      background-color: LightGray; 
-      text-align: center;
-  }
-  
-  .header {
-      font-size: 2em;
-  }
-  .seedbox {
-      margin-left: 35px;
-      font-size:1em;
-  }
-  .game {
-      z-index: 1;
-      display: none;
-      /*margin-left: 5%;
-      margin-right: 5%;*/
-  }
-  .initDiv {
-      display:inline-block;
-      position: fixed;
-      z-index: 3;
-      padding: 10px; /* Location of the box */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 60%;
-      
-  }
-  
-  .newGameBox {
-      display:none;
-      position: fixed;
-      z-index: 2;
-      margin: 0px;
-      padding-top: 10px;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-  }
-  .newGame {
-      background-color: MediumPurple;
-      margin: 0 auto;
-      width: 80%;
-      min-width: 250px;
-      font-size:1em;
-      overflow: auto;
-      border-radius: 15px;
-      padding: 15px;
-  }
-  .bigText {
-      font-size:1.5em;
-  }
-  .btnLine {
-      
-  }
-  input[type=button] {
-      font-size:3vw;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 1vw 1vw;
-      text-decoration: bold;
-      width: 60%;
-      cursor: pointer;
-  }
-  .inpLine {
-      margin: 4px auto;
-      float: left;
-      width: 100%;
-      min-width: 200px;
-      padding: 10px;
-      text-align: left;
-  }
-  
-  .line { 
-      display: block; 
-      clear: left; 
-  } 
-  .inputs { 
-      display: block; 
-      clear: left; 
-      margin: 50px;
-  } 
-  
-  .cell{ 
-      width: 5.7vw; 
-      height: 6vw; 
-      border-style: double; 
-      margin: 1px; 
-      padding: 0.5vw;
-      display:block; 
-      float: left; 
-      text-align: center; 
-      text-transform: uppercase; 
-      font-size:3vw;
-      color: black;
-      text-shadow: 1px 1px 2px #DDDDDD;
-      overflow: auto;
-      font-weight: bold;
-   } 
-
-  .cell::after { 
-      display: block; 
-      padding-top: 1vw; 
-    } 
-
-  .selectCell {
-      border-style: dashed;
-      opacity: 0.5;
-      border-width:5px;
-      border-color: Aquamarine;
-  }
-  
-  .highlightedCell {
-      border-style: dashed; 
-      border-color: black;
-      opacity: 0.5;
-      border-width:5px;
-  }
-  .column-3 {
-      width: 33%;
-      float: left;
-  }
-
-  .color-blue {
-      background-color: blue;
-      background-repeat: repeat;
-  }
-  
-  .color-darkred {
-      background-color: darkred;
-      background-repeat: repeat;
-  }
-
-  .color-ForestGreen {
-      background-color: ForestGreen; 
-      background-repeat: repeat;
-  }
-
-  .color-MediumPurple {
-      background-color: MediumPurple; 
-      background-repeat: repeat;
-  }
-
-  .color-gold {
-      background-color: gold;
-      background-repeat: repeat;
-  }
-  .color-white {
-      background-color: white; 
-  }
-
-@media only screen and (max-width:550px) {
-  /* For little screens */
-  .cell{ 
-      width: 10vw; 
-      height: 13vw; 
-      font-size:5vw;
-   } 
+  box-sizing: border-box;
 }
-@media only screen and (min-width:1000px) {
-/* For large screens */
+
+body {
+  background-color: var(--background-color);
+  text-align: center;
+  color: var(--text-color);
+}
+
+.header {
+  font-size: 2em;
+  color: var(--text-color);
+}
+
+.seedbox {
+  margin-left: 35px;
+  font-size: 1em;
+  color: var(--text-color);
+}
+
+.game {
+  z-index: 1;
+  display: none;
+}
+
+.initDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 3;
+  padding: 10px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+}
+
+.newGameBox {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  margin: 0;
+  padding-top: 10px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.newGame {
+  background-color: var(--newgame-bg-color);
+  margin: 0 auto;
+  width: 80%;
+  min-width: 250px;
+  font-size: 1em;
+  overflow: auto;
+  border-radius: 15px;
+  padding: 15px;
+  color: var(--button-text-color);
+}
+
+.bigText {
+  font-size: 1.5em;
+  color: var(--text-color);
+}
+
+input[type=button] {
+  font-size: 3vw;
+  background-color: var(--button-bg-color);
+  border: none;
+  color: var(--button-text-color);
+  padding: 1vw 1vw;
+  width: 60%;
+  cursor: pointer;
+}
+
 .inpLine {
-  width:40%;
-  margin: 15px;
+  margin: 4px auto;
+  float: left;
+  width: 100%;
+  min-width: 200px;
+  padding: 10px;
+  text-align: left;
+  color: var(--text-color);
 }
+
+.line {
+  clear: left;
+}
+
+.inputs {
+  display: block;
+  clear: left;
+  margin: 50px;
+}
+
+.cell {
+  width: 5.7vw;
+  height: 6vw;
+  border-style: double;
+  margin: 1px;
+  padding: 1vw;
+  display: block;
+  float: left;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 3vw;
+  color: var(--cell-text-color);
+  text-shadow: 1px 1px 2px var(--cell-text-shadow-color);
+  overflow: auto;
+  font-weight: bold;
+}
+
+.cell::after {
+  display: block;
+  padding-top: 1vw;
+}
+
+.selectCell {
+  border-style: dashed;
+  opacity: 0.5;
+  border-width: 5px;
+  border-color: var(--select-cell-color);
+}
+
+.highlightedCell {
+  border-style: dashed;
+  border-color: var(--highlighted-cell-color);
+  opacity: 0.5;
+  border-width: 5px;
+}
+
+.column-3 {
+  width: 33%;
+  float: left;
+  color: var(--column3-text-color);
+  margin-bottom: 50px;
+}
+
+.color-white {
+  background-color: var(--color-white-bg);
+  color: var(--text-color);
+}
+
+.color-blue {
+  background-color: var(--color-blue-bg);
+  color: var(--button-text-color);
+}
+
+.color-darkred {
+  background-color: var(--color-darkred-bg);
+  color: var(--button-text-color);
+}
+
+.color-ForestGreen {
+  background-color: var(--color-forestgreen-bg);
+  color: var(--button-text-color);
+}
+
+.color-MediumPurple {
+  background-color: var(--color-mediumpurple-bg);
+  color: var(--button-text-color);
+}
+
+.color-gold {
+  background-color: var(--color-gold-bg);
+  color: var(--button-text-color);
+}
+
+@media only screen and (max-width: 550px) {
+  .cell {
+    width: 10vw;
+    height: 13vw;
+    font-size: 5vw;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .inpLine {
+    width: 40%;
+    margin: 15px;
+  }
 }
