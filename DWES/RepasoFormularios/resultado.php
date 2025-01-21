@@ -1,11 +1,11 @@
 <?php
-$nombre       = $_GET['nombre'] ?? "";
-$pass         = $_GET['pass'] ?? "";
-$nivel        = $_GET['nivel'] ?? "";
-$nacionalidad = $_GET['nacionalidad'] ?? "";
-$email        = $_GET['email'] ?? "";
-$idiomas      = $_GET['idiomas'] ?? "";
-$foto         = $_GET['foto'] ?? "";
+$nombre       = $_GET['nombre'] ?? null;
+$pass         = $_GET['pass'] ?? null;
+$nivel        = $_GET['nivel'] ?? null;
+$nacionalidad = $_GET['nacionalidad'] ?? null;
+$email        = $_GET['email'] ?? null;
+$idiomas      = $_GET['idiomas'] ?? null;
+$foto         = $_GET['foto'] ?? null;
 
 // Convertimos la cadena de idiomas en array
 $listaIdiomas = explode(",", $idiomas);

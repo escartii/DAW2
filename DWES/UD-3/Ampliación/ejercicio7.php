@@ -5,13 +5,13 @@
  */
 
 // Declarar los arrays
-$numero = [];
+$hora = ["14:10", "15:05", "16:00", "16:55", "17:15", "18:10", "19:05","20:00"];
 $cuadrado = [];
 $cubo = [];
 
 // Generar números aleatorios y almacenarlos en el array $numero
-for ($i = 0; $i < 20; $i++) {
-    $numero[$i] = rand(0, 100);
+for ($i = 0; $i < 7; $i++) {
+    $hora[$i] = rand(1,60);
 }
 
 // Calcular el cuadrado de cada número y almacenarlos en el array $cuadrado
@@ -25,7 +25,7 @@ foreach ($numero as $num) {
 }
 
 // Mostrar el contenido de los tres arrays en tres columnas
-echo "Numero\t| Cuadrado\t| Cubo\n";
+echo "Hora\t| Miercoles\t| Martes\t| Miercoles\t| Jueves\t| Viernes\n";
 echo "-------\t| ---------\t| ----\n";
 for ($i = 0; $i < 20; $i++) {
     echo $numero[$i] . "\t| " . $cuadrado[$i] . "\t\t| " . $cubo[$i] . "\n";

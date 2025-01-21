@@ -2,7 +2,7 @@
 
 /**
  * @Author: Álvaro Escartí
- * Modified version with tournament tracking
+ *          
  */
 
 // Función para inicializar el tablero vacío
