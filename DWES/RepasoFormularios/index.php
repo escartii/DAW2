@@ -20,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     if (isset($_POST['Limpiar'])) {
         // Limpiar los datos
-        $nombre = "";
-        $pass = "";
-        $nivel = "";
-        $nacionalidad = "";
-        $email = "";
+        $nombre = null;
+        $pass = null;
+        $nivel = null;
+        $nacionalidad = null;
+        $email = null;
         $idiomas = [];
-        $fotoAnterior = "";
+        $fotoAnterior = null;
     } else {
         // Procesar los datos del formulario
         if (isset($_POST['nombre'])) {
@@ -180,8 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 // Si hay errores, los mostramos
 if (count($errores) > 0) {
     echo "<ul class='error'>";
-    foreach($errores as $e) {
-        echo "<li>$e</li>";
+    foreach($errores as $error) {
+        echo "<li>$error</li>";
     }
     echo "</ul>";
 } elseif (isset($_POST['Validar']) && count($errores) == 0) {
