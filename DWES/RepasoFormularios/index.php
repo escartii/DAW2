@@ -200,42 +200,28 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <label>Nivel de estudios:</label><br>
             <select name="nivel">
                 <option value="">Seleccione...</option>
-                <option <?php if ($nivel == "Sin estudios")
-                    echo "selected"; ?>>Sin estudios</option>
-                <option <?php if ($nivel == "Educación Secundaria Obligatoria")
-                    echo "selected"; ?>>Educación Secundaria
-                    Obligatoria</option>
-                <option <?php if ($nivel == "Bachillerato")
-                    echo "selected"; ?>>Bachillerato</option>
-                <option <?php if ($nivel == "Formación Profesional")
-                    echo "selected"; ?>>Formación Profesional</option>
-                <option <?php if ($nivel == "Estudios Universitarios")
-                    echo "selected"; ?>>Estudios Universitarios
+                <option <?php if ($nivel == "Sin estudios") echo "selected"; ?>>Sin estudios</option>
+                <option <?php if ($nivel == "Educación Secundaria Obligatoria") echo "selected"; ?>>Educación Secundaria Obligatoria</option>
+                <option <?php if ($nivel == "Bachillerato") echo "selected"; ?>>Bachillerato</option>
+                <option <?php if ($nivel == "Formación Profesional") echo "selected"; ?>>Formación Profesional</option>
+                <option <?php if ($nivel == "Estudios Universitarios") echo "selected"; ?>>Estudios Universitarios
                 </option>
             </select>
         </p>
 
         <p>
             <label>Nacionalidad:</label><br>
-            <input type="radio" name="nacionalidad" value="Española" <?php if ($nacionalidad == "Española")
-                echo "checked"; ?>> Española
-            <input type="radio" name="nacionalidad" value="Otra" <?php if ($nacionalidad == "Otra")
-                echo "checked"; ?>>
-            Otra
+            <input type="radio" name="nacionalidad" value="Española" <?php if ($nacionalidad == "Española") echo "checked"; ?>> Española
+            <input type="radio" name="nacionalidad" value="Otra" <?php if ($nacionalidad == "Otra") echo "checked"; ?>> Otra
         </p>
 
         <p>
             <label>Idiomas (selecciona al menos uno):</label><br>
-            <input type="checkbox" name="idiomas[]" value="Español" <?php if (in_array("Español", $idiomas))
-                echo "checked"; ?>> Español<br>
-            <input type="checkbox" name="idiomas[]" value="Inglés" <?php if (in_array("Inglés", $idiomas))
-                echo "checked"; ?>> Inglés<br>
-            <input type="checkbox" name="idiomas[]" value="Francés" <?php if (in_array("Francés", $idiomas))
-                echo "checked"; ?>> Francés<br>
-            <input type="checkbox" name="idiomas[]" value="Alemán" <?php if (in_array("Alemán", $idiomas))
-                echo "checked"; ?>> Alemán<br>
-            <input type="checkbox" name="idiomas[]" value="Italiano" <?php if (in_array("Italiano", $idiomas))
-                echo "checked"; ?>> Italiano<br>
+            <input type="checkbox" name="idiomas[]" value="Español" <?php if (in_array("Español", $idiomas)) echo "checked"; ?>> Español<br>
+            <input type="checkbox" name="idiomas[]" value="Inglés" <?php if (in_array("Inglés", $idiomas)) echo "checked"; ?>> Inglés<br>
+            <input type="checkbox" name="idiomas[]" value="Francés" <?php if (in_array("Francés", $idiomas)) echo "checked"; ?>> Francés<br>
+            <input type="checkbox" name="idiomas[]" value="Alemán" <?php if (in_array("Alemán", $idiomas)) echo "checked"; ?>> Alemán<br>
+            <input type="checkbox" name="idiomas[]" value="Italiano" <?php if (in_array("Italiano", $idiomas)) echo "checked"; ?>> Italiano<br>
         </p>
 
         <p>
