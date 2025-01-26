@@ -164,12 +164,10 @@ const campeones = [
     { name: "Zyra", role: "Maga/Soporte, AP" }
 ];
 
-// Función que elimina cualquier caracter y devuelve el nombre en minúsculas
 function sanitizarNombre(nombre) {
     return nombre.toLowerCase().replace(/['\s]/g, '');
 }
 
-// Variables del juego
 const tablero = document.getElementById('tablero-juego');
 const retroalimentacion = document.getElementById('retroalimentacion');
 let filaActual = 0;
@@ -179,7 +177,6 @@ let campeonElegidoObj;
 let campeonElegido;
 let longitudCampeon;
 
-// Función para elegir un campeón aleatoriamente
 function elegirCampeon() {
     campeonElegidoObj = campeones[Math.floor(Math.random() * campeones.length)];
     campeonElegido = sanitizarNombre(campeonElegidoObj.name);
@@ -187,20 +184,18 @@ function elegirCampeon() {
     console.log("Campeón elegido:", campeonElegido);
 }
 
-// Inicializar el juego
 function inicializarJuego() {
     elegirCampeon();
     inicializarTablero();
 }
 
-// Inicializar el tablero con casillas dinámicas según la longitud del campeón
 function inicializarTablero() {
-    tablero.innerHTML = ''; // Limpiar el tablero antes de inicializar
+    tablero.innerHTML = '';
     for (let i = 0; i < maxIntentos; i++) {
         const fila = document.createElement('div');
         fila.classList.add('fila');
-        fila.style.gridTemplateColumns = `repeat(${longitudCampeon}, 1fr)`; // Configurar columnas dinámicamente
-        for (let j = 0; j < longitudCampeon; j++) { // Usar la longitud del nombre del campeón
+        fila.style.gridTemplateColumns = `repeat(${longitudCampeon}, 1fr)`;
+        for (let j = 0; j < longitudCampeon; j++) {
             const casilla = document.createElement('div');
             casilla.classList.add('casilla');
             fila.appendChild(casilla);
@@ -209,13 +204,12 @@ function inicializarTablero() {
     }
 }
 
-// Mostrar la imagen del campeón
 function mostrarImagenCampeon() {
     const imagenCampeon = document.getElementById('imagen-campeon');
-    const nombreImagen = capitalizar(campeonElegidoObj.name); // Nombre original con mayúsculas y espacios
-    imagenCampeon.src = `img/${nombreImagen}.png`; // Asegúrate de que las imágenes sigan este formato
-    imagenCampeon.style.display = "block"; // Mostrar la imagen
-    imagenCampeon.style.margin = "0 auto"; // Centrar la imagen horizontalmente
+    const nombreImagen = capitalizar(campeonElegidoObj.name);
+    imagenCampeon.src = `img/${nombreImagen}.png`;
+    imagenCampeon.style.display = "block";
+    imagenCampeon.style.margin = "0 auto";
 }
 
 // Función para capitalizar el nombre correctamente (manteniendo el formato original)
@@ -230,9 +224,9 @@ const teclas = document.querySelectorAll('.tecla');
 teclas.forEach(tecla => {
     tecla.addEventListener('click', () => {
         const valorTecla = tecla.textContent.toLowerCase();
-        if (valorTecla === 'enter') { // Manejar "ENTER"
+        if (valorTecla === 'enter') {
             manejarIntento();
-        } else if (valorTecla === '⌫' || valorTecla === 'backspace') { // Manejar "BACKSPACE"
+        } else if (valorTecla === '⌫' || valorTecla === 'backspace') { 
             eliminarLetra();
         } else {
             agregarLetra(valorTecla);
@@ -240,10 +234,7 @@ teclas.forEach(tecla => {
     });
 });
 
-// Detectar teclas físicas
 document.addEventListener('keydown', manejarTeclas);
-
-// Función para manejar las teclas físicas
 function manejarTeclas(e) {
     const tecla = e.key.toLowerCase();
 
@@ -262,7 +253,6 @@ function manejarTeclas(e) {
     }
 }
 
-// Agregar letras a las casillas
 function agregarLetra(letra) {
     if (casillaActual < longitudCampeon) {
         const filaActualElemento = tablero.children[filaActual];
@@ -273,7 +263,6 @@ function agregarLetra(letra) {
     }
 }
 
-// Eliminar la última letra
 function eliminarLetra() {
     if (casillaActual > 0) {
         casillaActual--;
@@ -284,7 +273,6 @@ function eliminarLetra() {
     }
 }
 
-// Manejar el intento
 function manejarIntento() {
     const filaActualElemento = tablero.children[filaActual];
     const intento = Array.from(filaActualElemento.children)
@@ -302,7 +290,6 @@ function manejarIntento() {
         return;
     }
 
-    // Pintar las letras según la coincidencia
     for (let i = 0; i < longitudCampeon; i++) {
         const casilla = filaActualElemento.children[i];
         const letra = casilla.dataset.letra.toLowerCase();
@@ -319,14 +306,13 @@ function manejarIntento() {
         }
     }
 
-    // Verificar si el jugador ha ganado o si ha terminado el juego
     if (intento === campeonElegido) {
         retroalimentacion.textContent = "¡Has adivinado el campeón!";
-        mostrarImagenCampeon(); // Mostrar la imagen del campeón
+        mostrarImagenCampeon();
         deshabilitarEntrada();
     } else if (filaActual >= maxIntentos - 1) {
         retroalimentacion.textContent = `¡Juego terminado! El campeón era ${capitalizar(campeonElegidoObj.name)}.`;
-        mostrarImagenCampeon(); // Mostrar la imagen del campeón
+        mostrarImagenCampeon();
         deshabilitarEntrada();
     } else {
         filaActual++;
@@ -339,7 +325,7 @@ function manejarIntento() {
 function actualizarTecla(letra, clase) {
     teclas.forEach(tecla => {
         if (tecla.textContent.toLowerCase() === letra.toLowerCase()) {
-            tecla.classList.remove('correcto', 'presente', 'incorrecto'); // Remover clases previas
+            tecla.classList.remove('correcto', 'presente', 'incorrecto');
             tecla.classList.add(clase);
         }
     });
@@ -351,34 +337,19 @@ function iniciarNuevaPartida() {
     tablero.innerHTML = '';
     filaActual = 0;
     casillaActual = 0;
-
-    // Elegir un nuevo campeón aleatoriamente
     elegirCampeon();
-
-    // Reinicializar el tablero
     inicializarTablero();
-
-    // Reiniciar los mensajes de retroalimentación
     retroalimentacion.textContent = '';
-
-    // Reiniciar estilos del teclado
     teclas.forEach(tecla => {
         tecla.classList.remove('correcto', 'presente', 'incorrecto');
     });
-
-    // Ocultar la imagen del campeón
     const imagenCampeon = document.getElementById('imagen-campeon');
     imagenCampeon.style.display = "none";
-
-    // Habilitar nuevamente la entrada
     habilitarEntrada();
 }
 
-// Añadir el evento al botón de "Empezar nueva partida"
 const botonNuevaPartida = document.getElementById('nueva-partida');
 botonNuevaPartida.addEventListener('click', iniciarNuevaPartida);
-
-// Añadir el event listener para el botón "Obtener Pista"
 const botonObtenerPista = document.getElementById('obtener-pista');
 botonObtenerPista.addEventListener('click', mostrarImagenCampeon);
 
@@ -410,7 +381,6 @@ botonCambiarModo.addEventListener('click', () => {
     }
 });
 
-// Inicializar el juego al cargar la página
 inicializarJuego();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -422,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
         campeonesList.appendChild(listItem);
     });
 
-    // Mostrar/Ocultar lista de campeones
     const botonMostrarLista = document.getElementById('mostrar-lista');
     const listaCampeones = document.getElementById('lista-campeones');
 

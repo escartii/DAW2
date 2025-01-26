@@ -7,14 +7,19 @@ $email        = $_GET['email'] ?? null;
 $idiomas      = $_GET['idiomas'] ?? null;
 $foto         = $_GET['foto'] ?? null;
 
-// Convertimos la cadena de idiomas en array
-$listaIdiomas = explode(",", $idiomas);
+// Convertir la cadena de idiomas en array
+$listaIdiomas = ($idiomas !== "") ? explode(",", $idiomas) : [];
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Resultado</title>
+    <style>
+        ul { list-style-type: none; }
+        li { margin-bottom: 5px; }
+        img { margin-top: 10px; max-width: 200px; }
+    </style>
 </head>
 <body>
 <h1>Resultado del formulario</h1>
@@ -27,26 +32,23 @@ $listaIdiomas = explode(",", $idiomas);
     <li><b>Email:</b> <?php echo htmlspecialchars($email); ?></li>
     <li><b>Idiomas:</b>
         <?php
-        // Si no seleccionaron nada, la cadena será "", lo cual explode da array(1) con ""
-        // Puedes controlar eso para no mostrar un item vacío:
-        if ($idiomas == "") {
+        if (empty($listaIdiomas)) {
             echo "(Ningún idioma seleccionado)";
         } else {
             echo "<ul>";
-            foreach($listaIdiomas as $i){
-                echo "<li>".htmlspecialchars($i)."</li>";
+            foreach ($listaIdiomas as $idioma) {
+                echo "<li>" . htmlspecialchars($idioma) . "</li>";
             }
             echo "</ul>";
         }
         ?>
     </li>
-    <li><b>Ruta de la foto:</b> <?php echo htmlspecialchars($foto); ?></li>
-    <li>
+    <li><b>Foto:</b>
         <?php
         if (!empty($foto) && file_exists($foto)) {
-            echo "<img src='$foto' alt='Foto' width='200'>";
+            echo "<br><img src='" . htmlspecialchars($foto) . "' alt='Foto'>";
         } else {
-            echo "(No se encontró la foto)";
+            echo " (No se encontró la foto)";
         }
         ?>
     </li>
