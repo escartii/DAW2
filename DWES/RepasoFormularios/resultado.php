@@ -19,12 +19,16 @@ $listaIdiomas = ($idiomas !== "") ? explode(",", $idiomas) : [];
         ul { list-style-type: none; }
         li { margin-bottom: 5px; }
         img { margin-top: 10px; max-width: 200px; }
+        h1 {
+            color: blue;
+        }
     </style>
 </head>
 <body>
 <h1>Resultado del formulario</h1>
 <p>Los datos procesados son:</p>
 <ul>
+    <h1>Formulario validado correctamente</h1>
     <li><b>Nombre:</b> <?php echo htmlspecialchars($nombre); ?></li>
     <li><b>Contraseña:</b> <?php echo htmlspecialchars($pass); ?></li>
     <li><b>Nivel de estudios:</b> <?php echo htmlspecialchars($nivel); ?></li>

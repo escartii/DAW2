@@ -9,7 +9,6 @@ $idiomas = [];
 $fotoAnterior = null;
 $maxSize = 50 * 1024;
 $errores = [];
-
 $carpeta = "uploads/";
 
 // Verificamos que se haya enviado el formulario por POST

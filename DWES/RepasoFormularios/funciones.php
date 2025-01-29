@@ -13,6 +13,8 @@ function comprobarNombre($nombre){
     // devuelvo vacío si no hay errores
     return null;
 }
+
+
 function comprobarEmail($email){
     if (empty($email)) {
         return "El email no puede estar vacío";
