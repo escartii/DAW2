@@ -1,4 +1,3 @@
-
 function abrirModal() {
     document.getElementById("fondo").classList.remove("oculto");
     document.getElementById("modal").classList.remove("oculto");
@@ -137,6 +136,18 @@ document.addEventListener("DOMContentLoaded", function () {
             let data = await response.json();
             // console.log(data);
             crearTabla(data, areas[i].title);
+            const responseIMG = await fetch(`https://api.weatherusa.net/v1/skycams?q=${estados[areas[i].title].latitude},${estados[areas[i].title].longitude}`);
+            const dataIMG = await responseIMG.json();
+            CrearImg(dataIMG, areas[i].title);
         });
     };
 });
+
+function CrearImg(data, title) {
+    let div = document.getElementById("camara-web");
+
+    let img = data[0];
+
+    div.innerHTML = `<img src="${img.image}" alt="${title}" width="700" />`;
+
+}
