@@ -1,199 +1,437 @@
-@font-face {
-    font-family: "pokemon";
-    src: url("../fonts/Ketchum.otf");
+/* Estilos generales para el body y tipografía */
+
+body {
+
+    margin: 0;
+
+    padding: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 100vh;
+
+    background: #0f2027;
+
+    background: -webkit-linear-gradient(to right, #2c5364, #203a43, #0f2027);
+
+    background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+
+    font-family: Arial, sans-serif;
+
 }
 
-#main {
-    display: grid;
-    grid-template-rows:25% 50% 25%;
-    width: 1200px;
-    margin: 0 auto;
+  
+
+/* Contenedor principal (Tablero) */
+
+.tablero {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    width: 100%;
+
+    height: 100vh;
+
+    background-image: url("../img/fondo.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    padding: 10px;
+
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+
+    border-radius: 10px;
+
     position: relative;
-    height:100%;
+
 }
 
-#machine {
-    float:left;
-    width:100%;
+  
+
+/* Título principal */
+
+.titulo {
+
+    color: white;
+
+    font-size: 3em;
+
+    margin-bottom: 10px;
+
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+
 }
 
-#player{
-    float:left;
-    width:100%;
+  
+
+/* Botones de acción */
+
+.actions {
+
+    margin-bottom: 10px;
+
 }
 
-#player .carta {
-    margin-top:-20px;
+  
+
+.actions button {
+
+    margin: 0 5px;
+
+    padding: 10px 20px;
+
+    font-size: 1.2em;
+
+    cursor: pointer;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background-color: #fff;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    transition: background-color 0.3s;
+
 }
 
-#play {
-    float:left;
-    width:100%;
+  
+
+.actions button:hover {
+
+    background-color: #ddd;
+
 }
+
+  
+
+/* Filas de cartas (jugadores) */
+
+.fila {
+
+    display: flex;
+
+    justify-content: space-around;
+
+    width: 100%;
+
+}
+
+  
+
+.fila-superior,
+
+.fila-inferior {
+
+    margin: 10px 0;
+
+}
+
+  
+
+/* Estilo para cada carta de Pokémon */
 
 .carta {
-    position:relative;
-    width:200px;
-    max-height:350px;
-    background-color:black;
-    float:left;
-    box-shadow:0 0 15px gray;
-    margin:10px;
-    padding:10px;
-    border-radius:5px;
+
+    width: 220px;
+
+    height: 260px;
+
+    background-color: #fff;
+
+    border: 3px solid #000;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+
+    background-size: cover;
+
+    background-position: center;
+
     cursor: pointer;
-    transform: scale(1);
-    transition: transform .3s;
+
+    transition: transform 0.2s;
+
+    /* Se agrega para poder posicionar el nombre dentro de la carta */
+
+    position: relative;
+
 }
+
+  
 
 .carta:hover {
-    transform: scale(1.1);
-    transition: transform .3s;
-    box-shadow:0 0 15px black;
+
+    transform: scale(1.05);
+
 }
 
-.carta * {
-    width:calc(100%);
-    background-color:white;
-}
-.carta img {
-    box-shadow: inset 0 0 10px gray;
-    background-color: lightblue;
+  
+
+/* Texto VS entre filas */
+
+.vs {
+
+    font-size: 4em;
+
+    color: #fff;
+
+    margin: 5px 0;
+
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+
 }
 
-.carta div {
-    background-color: whitesmoke;
-    box-shadow: inset 0 0 10px gray;
-    text-transform: capitalize;
+  
+
+/* Nombres de los jugadores */
+
+.jugadores {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    font-size: 2em;
+
+    color: #fff;
+
     margin-top: 10px;
-    text-align:center;
+
+    padding: 0 10px;
+
+}
+
+  
+
+.jugador {
+
+    width: 150px;
+
+    text-align: center;
+
     font-weight: bold;
-    padding:10px 0 10px 0;
+
 }
 
-.carta .experiencia {
-    border: 1px solid white;
-    box-shadow:0 0 5px black;
-    position: absolute;
-    left:10px;
-    top:0;
-    width: auto;
-    background-color: black;
-    color: yellow;
-    text-align: left;
-    padding:5px;
-}
+  
 
-.dorso {
-    width: 99%;
-    height: 99%;
-    border-radius:5px;
-    position: absolute;
-    top:0;
-    left:0;
-}
-.ocultar {
-    display: none;
-}
+/* Modal de selección */
 
-#cartel {
-    font-family: pokemon;
-    font-size:130px;
-    text-align: center;
-    padding-top:20%;
-    color: yellow;
-    background-color:black;
-    opacity: .8;
-    width:100%;
-    height:100%;
-    position:absolute;
-    left:0;
-    top:0;
-}
+.modal-overlay {
 
-#cartasPlayer, #cartasMachine {
-    /* UTILIZAR FLEX */
-    position: absolute;
-    width:calc((100% - 1200px) / 2);
-    height: calc(100% - 95px);
-    top:0;
-    overflow: auto;
-    margin-top: 90px;
-}
+    position: fixed;
 
-/*#cartasPlayer *, #cartasMachine {*/
-/*    width:100%;*/
-/*}*/
+    top: 0;
 
-#cartasPlayer {
-    right:0;
-}
+    left: 0;
 
-#cartasMachine {
-    top:0;
-}
-
-#cartasMachine .carta {
-    float:right !important;
-}
-
-#jugadaMachine, #jugadaPlayer {
-    position: absolute;
-    top:0;
-}
-
-#jugadaPlayer > div {
-    left:0;
-}
-
-#jugadaMachine > div {
-    position: absolute;
-    right:0;
-}
-
-#jugadaPlayer, #jugadaMachine{
-    position: relative;
-    width:50%;
-    height:100%;
-    float:left;
-    padding-top:30px;
-}
-
-#totalPlayer, #totalMachine {
-    padding:10px;
-    font-family: pokemon;
-    font-size:50px;
-    color: yellow;
-    text-align:center;
-    position:fixed;
-    top:0;
-    width:calc((100% - 1240px) / 2);
-    background-color:black;
-}
-#totalPlayer {
     right: 0;
+
+    bottom: 0;
+
+    background: rgba(0, 0, 0, 0.8);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 1000;
+
 }
 
-#totalMachine {
-    left:0;
-}
+  
 
-#reportero {
-    position:fixed;
-    right:20px;
-    bottom:20px;
-    border: gray;
-    background-color:whitesmoke;
-    box-shadow: 0 0 15px gray;
-    width:280px;
+.modal-content {
+
+    background: #fff;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    width: 90%;
+
+    max-width: 1200px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
     text-align: center;
-    padding: 25px;
+
 }
 
-#reportero img {
-    top:0;
-    left:0;
-    margin-bottom:-7px;
-    width:auto;
-    height:25px;
+  
+
+.modal-content h2 {
+
+    margin-top: 0;
+
+}
+
+  
+
+/* Grid para las cartas del modal */
+
+.modal-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+}
+
+  
+
+.modal-carta {
+
+    width: 120px;
+
+    height: 140px;
+
+    background-color: #f5f5f5;
+
+    border: 2px solid #333;
+
+    border-radius: 8px;
+
+    background-size: cover;
+
+    background-position: center;
+
+    cursor: pointer;
+
+    transition: transform 0.2s;
+
+    /* Se agrega para poder posicionar el nombre dentro de la carta del modal */
+
+    position: relative;
+
+}
+
+  
+
+.modal-carta:hover {
+
+    transform: scale(1.1);
+
+}
+
+  
+
+/* Botón de cerrar modal */
+
+.modal-close {
+
+    margin-top: 20px;
+
+    padding: 10px 20px;
+
+    font-size: 1em;
+
+    cursor: pointer;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background-color: #333;
+
+    color: #fff;
+
+    transition: background-color 0.3s;
+
+}
+
+  
+
+.modal-close:hover {
+
+    background-color: #555;
+
+}
+
+
+
+/* ============================= */
+
+/* Estilos para mostrar el nombre */
+
+/* ============================= */
+
+
+
+/* Nombre del Pokémon en la carta */
+
+.carta .nombre-pokemon {
+
+    position: absolute;
+
+    bottom: 0;
+
+    width: 100%;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    color: #fff;
+
+    font-size: 1em;
+
+    text-align: center;
+
+    padding: 5px 0;
+
+    border-bottom-left-radius: 7px;
+
+    border-bottom-right-radius: 7px;
+
+}
+
+
+
+/* Nombre del Pokémon en las cartas del modal */
+
+.modal-carta .nombre-pokemon {
+
+    position: absolute;
+
+    bottom: 0;
+
+    width: 100%;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    color: #fff;
+
+    font-size: 0.8em;
+
+    text-align: center;
+
+    padding: 3px 0;
+
+    border-bottom-left-radius: 6px;
+
+    border-bottom-right-radius: 6px;
+
 }

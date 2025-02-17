@@ -1,55 +1,310 @@
-body {
+/* ==============================
+   Estilos Globales
+============================== */
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0F2027;
+    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: #0F2027;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-}
-
-.tablero {
+    min-height: 100vh;
+    color: #fff;
+  }
+  
+  /* ==============================
+     Contenedor Principal (Tablero)
+  ============================== */
+  .tablero {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     width: 90%;
+    max-width: 1200px;
     height: 80%;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1);
     background-image: url("../img/fondo.jpg");
     background-size: cover;
     background-position: center;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+  }
+  
+  /* ==============================
+     Configurador y Marcador
+  ============================== */
+  .configurador,
+  .scoreboard {
+    position: absolute;
+    top: 20px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
     border-radius: 10px;
-}
-
-.fila {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .configurador {
+    left: 20px;
+  }
+  
+  .scoreboard {
+    right: 20px;
+  }
+  
+  .configurador h2,
+  .scoreboard h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+  }
+  
+  .configurador button,
+  .scoreboard button {
+    padding: 10px 15px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    background: #2C5364;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .configurador button:hover,
+  .scoreboard button:hover {
+    background: #203A43;
+  }
+  
+  /* ==============================
+     Título y Botones de Acción
+  ============================== */
+  .titulo {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    margin-bottom: 10px;
+  }
+  
+  .actions {
+    margin: 20px 0;
     display: flex;
-    justify-content: space-around;
+    gap: 15px;
+  }
+  
+  .actions button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2C5364;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .actions button:hover {
+    background-color: #203A43;
+  }
+  
+  /* ==============================
+     Filas y Cartas de Pokémon
+  ============================== */
+  .fila {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
     width: 100%;
-}
-
-.fila-superior {
+  }
+  
+  .fila-superior {
     margin-bottom: 20px;
-}
-
-.fila-inferior {
+  }
+  
+  .fila-inferior {
     margin-top: 20px;
-}
-
-.carta {
+  }
+  
+  .carta {
     width: 100px;
     height: 150px;
     background-color: #fff;
     border: 2px solid #000;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-size: cover;
+    background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .carta:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Nombre del Pokémon en la carta */
+  .nombre-pokemon {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    padding: 2px 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  /* ==============================
+     Jugadores (Etiquetas J1 y J2)
+  ============================== */
+  .jugadores {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+    margin-top: 10px;
+  }
+  
+  .jugador {
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* VS (Texto central) */
+  .vs {
+    font-size: 48px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    margin: 10px 0;
+  }
+  
+  /* ==============================
+     Modal (Selección Manual y Batalla)
+  ============================== */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
     color: #333;
-}
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #2C5364;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .modal-close:hover {
+    background: #203A43;
+  }
+  
+  /* Grid de Pokémon en el modal */
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .modal-carta {
+    width: 100px;
+    height: 150px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .modal-carta:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-carta .nombre-pokemon {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 12px;
+    width: 100%;
+    text-align: center;
+    padding: 2px 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  /* ==============================
+     Registro de Batalla
+  ============================== */
+  .battle-log {
+    margin-top: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    color: #333;
+  }
+  
+  .battle-log p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
