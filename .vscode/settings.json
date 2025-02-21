@@ -1,4 +1,7 @@
 {
-    "editor.fontLigatures": true
+    "editor.fontLigatures": true,
+    "editor.fontWeight": "bold",
+    "editor.acceptSuggestionOnCommitCharacter": true,
+
     
 }

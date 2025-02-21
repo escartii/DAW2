@@ -1,27 +1,917 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablero de Cartas</title>
-    <link rel="stylesheet" href="tablero.css">
+  <meta charset="UTF-8">
+  <title>Batalla Pokémon - Drag & Drop y Selección Manual</title>
+  <!-- Se incluye Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Fuente estilo Pokémon -->
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/pokemon-gb">
+  <style>
+    /* ---------- Reset y estilos base ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      /* Ajustamos la fuente para usar la de Pokémon GB */
+      font-family: 'Pokemon GB', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    /* ---------- Contenedor principal ---------- */
+    #app {
+      width: 95%;
+      max-width: 1400px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    /* ---------- Área principal (paneles y área de batalla) ---------- */
+    .main-container {
+      display: flex;
+      flex: 1;
+      min-height: 450px;
+    }
+    /* ---------- Paneles de Equipo ---------- */
+    .team-panel {
+      width: 25%;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    /* Equipo 1 (izquierda): fondo amarillo claro */
+    .team-panel-left {
+      background: #FFF9C4;
+      border-right: 2px solid #eee;
+    }
+    /* Equipo 2 (derecha): fondo azul claro */
+    .team-panel-right {
+      background: #BBDEFB;
+      border-left: 2px solid #eee;
+    }
+    .team-panel h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .team-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .team-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: grab;
+      transition: background-color 0.5s;
+    }
+    .team-card img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+    .pokemon-info {
+      flex: 1;
+    }
+    .pokemon-name {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.95em;
+    }
+    .hp-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 3px;
+    }
+    .hp-fill {
+      height: 100%;
+      background: #48c048;
+      border-radius: 4px;
+    }
+    .hp-text {
+      font-size: 0.8em;
+      color: #555;
+    }
+    /* Marcamos en rojo los Pokémon debilitados */
+    .debilitado {
+      background-color: #ffb3b3 !important;
+      cursor: not-allowed !important;
+    }
+    /* ---------- Área de Batalla (Centro) ---------- */
+    .battle-arena {
+      width: 50%;
+      padding: 15px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-left: 2px solid #eee;
+      border-right: 2px solid #eee;
+    }
+    .battle-arena h2 {
+      margin-bottom: 15px;
+    }
+    /* Drop zones para asignar Pokémon mediante drag & drop */
+    .battle-slots {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-bottom: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .battle-slot {
+      width: 140px;
+      height: 180px;
+      background: rgba(240,240,240,0.8);
+      border: 3px dashed #999;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .battle-slot img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+    .battle-slot p {
+      margin-top: 4px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+    .slot-label {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 0.8em;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .stadium-button {
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .stadium-button:hover {
+      background: #555;
+    }
+    /* ---------- Panel de Controles (Abajo) ---------- */
+    .control-panel {
+      padding: 15px;
+      text-align: center;
+      background: #f7f7f7;
+      border-top: 1px solid #eee;
+    }
+    .control-panel button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .control-panel button:hover {
+      background: #555;
+    }
+    /* ---------- Modal de Selección Manual ---------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+    }
+    .search-filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-filters input,
+    .search-filters select {
+      padding: 5px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    .modal-carta {
+      width: 100px;
+      height: 120px;
+      background-color: #f5f5f5;
+      border: 2px solid #333;
+      border-radius: 5px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .modal-carta:hover {
+      transform: scale(1.05);
+    }
+    .modal-carta .nombre-pokemon {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 0.8em;
+      text-align: center;
+      padding: 2px 0;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .modal-close:hover {
+      background-color: #555;
+    }
+    /* ---------- Battle Stadium Overlay (Estadio de Batalla) ---------- */
+    .battle-screen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 3000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .battle-screen {
+      width: 800px;
+      min-height: 600px;
+      background-color: #d0f0c0;
+      position: relative;
+      border: 8px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    /* Para el estilo "retro" de la interfaz de batalla */
+    .battle-gba-interface {
+      width: 100%;
+      min-height: 100%;
+      position: relative;
+      background-color: #f8f8f8; /* Fondo claro, simulando estilo GBA */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    /* Info de Pokémon rival (arriba) */
+    .opponent-info {
+      position: absolute;
+      top: 30px;
+      left: 40px;
+      width: 300px;
+      height: 60px;
+      background: #ffffff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 5px 10px;
+    }
+    .info-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    .pokemon-name {
+      font-weight: bold;
+    }
+    .pokemon-level {
+      margin-left: 10px;
+    }
+    .pokemon-gender {
+      margin-left: 5px;
+      color: #e00; /* Rojo para hembra, por ejemplo */
+    }
+    .hp-bar-container {
+      margin-top: 5px;
+    }
+    .hp-bar-container .hp-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .hp-bar-container .hp-fill {
+      height: 100%;
+      background: #48c048;
+      border-radius: 4px;
+    }
+    /* Info de Pokémon del jugador (abajo) */
+    .player-info {
+      position: absolute;
+      bottom: 130px;
+      right: 40px;
+      width: 300px;
+      height: 60px;
+      background: #ffffff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 5px 10px;
+    }
+    /* Caja de movimientos */
+    .moves-box {
+      background: #ccc;
+      border-top: 2px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .moves-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 90%;
+      justify-content: center;
+    }
+    .move-button {
+      padding: 8px 12px;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .move-button:hover {
+      background: #f0f0f0;
+    }
+    /* Zona central para las imágenes: uno arriba y el otro abajo */
+    .active-battle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      position: relative;
+      margin-top: 70px;  /* para no tapar la barra superior */
+      margin-bottom: 130px; /* para no tapar la barra inferior */
+    }
+    .active-pokemon {
+      text-align: center;
+    }
+    .active-pokemon img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 5px;
+    }
+    .vs-overlay {
+      font-size: 3em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    /* Botón para cerrar batalla (ya no es absolute) */
+    .battle-button {
+      margin: 10px auto 0 auto;
+      display: block;
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .battle-button:hover {
+      background: #555;
+    }
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .team-panel, .battle-arena {
+        width: 100%;
+      }
+      .battle-arena {
+        border: none;
+        margin: 15px 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="tablero">
-        <div class="fila fila-superior">
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
+  <div id="app">
+    <header>
+      <h1>Batalla Pokémon</h1>
+    </header>
+    <div class="main-container">
+      <!-- Panel Equipo 1 -->
+      <div class="team-panel team-panel-left">
+        <h2>Equipo 1</h2>
+        <div class="team-cards">
+          <div v-for="(pokemon, index) in pokemonsJugador1" :key="index" 
+               class="team-card"
+               :class="{ debilitado: pokemon.derrota }"
+               :draggable="pokemon.nombre && !pokemon.derrota"
+               @dragstart="onDragStart($event, pokemon, 'jugador1', index)">
+            <img :src="pokemon.sprites ? pokemon.sprites.front_default : ''" alt="Pokemon">
+            <div class="pokemon-info">
+              <div class="pokemon-name">{{ pokemon.nombre || 'Sin asignar' }}</div>
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: getHPPercentage(pokemon) + '%' }"></div>
+              </div>
+              <div class="hp-text">{{ getCurrentHP(pokemon) }} / {{ getMaxHP(pokemon) }}</div>
+            </div>
+          </div>
         </div>
-        <div class="fila fila-inferior">
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
-            <div class="carta"></div>
+      </div>
+      
+      <!-- Área de Batalla (Drop zones) -->
+      <div class="battle-arena">
+        <h2>Arrastra tus Pokémon para pelear</h2>
+        <div class="battle-slots">
+          <!-- Slot para Equipo 1 -->
+          <div class="battle-slot" 
+               @dragover.prevent 
+               @drop="onDrop($event, 'jugador1')">
+            <div class="slot-label">Equipo 1</div>
+            <div v-if="battleSlot1.nombre" class="battle-slot-content">
+              <img :src="battleSlot1.sprites.front_default" alt="Pokemon">
+              <p>{{ battleSlot1.nombre }}</p>
+            </div>
+          </div>
+          <!-- Slot para Equipo 2 -->
+          <div class="battle-slot" 
+               @dragover.prevent 
+               @drop="onDrop($event, 'jugador2')">
+            <div class="slot-label">Equipo 2</div>
+            <div v-if="battleSlot2.nombre" class="battle-slot-content">
+              <img :src="battleSlot2.sprites.front_default" alt="Pokemon">
+              <p>{{ battleSlot2.nombre }}</p>
+            </div>
+          </div>
         </div>
+        <button class="stadium-button" @click="abrirBattleOverlay">
+          Ir al Estadio
+        </button>
+      </div>
+      
+      <!-- Panel Equipo 2 -->
+      <div class="team-panel team-panel-right">
+        <h2>Equipo 2</h2>
+        <div class="team-cards">
+          <div v-for="(pokemon, index) in pokemonsJugador2" :key="index" 
+               class="team-card"
+               :class="{ debilitado: pokemon.derrota }"
+               :draggable="pokemon.nombre && !pokemon.derrota"
+               @dragstart="onDragStart($event, pokemon, 'jugador2', index)">
+            <img :src="pokemon.sprites ? pokemon.sprites.front_default : ''" alt="Pokemon">
+            <div class="pokemon-info">
+              <div class="pokemon-name">{{ pokemon.nombre || 'Sin asignar' }}</div>
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: getHPPercentage(pokemon) + '%' }"></div>
+              </div>
+              <div class="hp-text">{{ getCurrentHP(pokemon) }} / {{ getMaxHP(pokemon) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    
+    <!-- Panel de controles inferior -->
+    <div class="control-panel">
+      <button @click="generarPokemonAleatorios">Generar Pokémon Aleatorios</button>
+      <button @click="vaciarTablero">Vaciar Tablero</button>
+      <button @click="abrirModalManual">Elegir Pokémon Manualmente</button>
+    </div>
+    
+    <!-- Modal de Selección Manual -->
+    <div v-if="modalManual" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Selecciona tus Pokémon</h2>
+        <div class="search-filters">
+          <input v-model="filtroNombre" type="text" placeholder="Buscar por nombre..." />
+          <select v-model="filtroTipo">
+            <option value="">Todos los tipos</option>
+            <option v-for="tipo in tiposUnicos" :key="tipo" :value="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+        <div class="modal-grid">
+          <div v-for="(pokemon, index) in filteredPokemon" :key="index" class="modal-carta"
+               :style="{ backgroundImage: 'url(' + pokemon.sprites.front_default + ')' }"
+               @click="seleccionarPokemonManual(pokemon)"
+               :title="pokemon.nombre">
+            <div class="nombre-pokemon">{{ pokemon.nombre }}</div>
+          </div>
+        </div>
+        <button class="modal-close" @click="cerrarModalManual">Cerrar</button>
+      </div>
+    </div>
+    
+    <!-- Battle Stadium Overlay -->
+    <div v-if="battleOverlayVisible" class="battle-screen-overlay">
+      <div class="battle-screen">
+        <!-- Interfaz retro tipo GBA -->
+        <div class="battle-gba-interface">
+          <!-- Zona central: Pokémon 2 arriba y Pokémon 1 abajo -->
+          <div class="active-battle">
+            <!-- Pokémon 2 arriba -->
+            <div class="active-pokemon" v-if="battleSlot2.nombre">
+              <img :src="battleSlot2.sprites.front_default" alt="Pokemon">
+              <div class="vs-overlay" v-if="battleSlot1.nombre && battleSlot2.nombre">VS</div>
+            </div>
+            <!-- Pokémon 1 abajo -->
+            <div class="active-pokemon" v-if="battleSlot1.nombre">
+              <img :src="battleSlot1.sprites.front_default" alt="Pokemon">
+            </div>
+          </div>
+          
+          <!-- Info del Pokémon rival (arriba) -->
+          <div class="opponent-info" v-if="battleSlot2.nombre">
+            <div class="info-top">
+              <span class="pokemon-name">{{ battleSlot2.nombre }}</span>
+              <span class="pokemon-level">Lv.00</span>
+            </div>
+            <div class="hp-bar-container">
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: (battleSlot2.vida / getMaxHP(battleSlot2) * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Info del Pokémon del jugador (abajo) -->
+          <div class="player-info" v-if="battleSlot1.nombre">
+            <div class="info-top">
+              <span class="pokemon-name">{{ battleSlot1.nombre }}</span>
+              <span class="pokemon-level">Lv.00</span>
+            </div>
+            <div class="hp-bar-container">
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: (battleSlot1.vida / getMaxHP(battleSlot1) * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Caja de movimientos con turnos (abajo) -->
+          <div class="moves-box">
+            <!-- Movimientos del Pokémon 1 (jugador1) -->
+            <div class="moves-list" v-if="turno === 'jugador1' && battleSlot1.moveset">
+              <button class="move-button"
+                      v-for="(move, i) in battleSlot1.moveset"
+                      :key="i"
+                      @click="atacar(move, 'jugador1', 'jugador2')">
+                {{ move.name.toUpperCase() }} ({{ move.power }})
+              </button>
+            </div>
+            <!-- Movimientos del Pokémon 2 (jugador2) -->
+            <div class="moves-list" v-else-if="turno === 'jugador2' && battleSlot2.moveset">
+              <button class="move-button"
+                      v-for="(move, i) in battleSlot2.moveset"
+                      :key="i"
+                      @click="atacar(move, 'jugador2', 'jugador1')">
+                {{ move.name.toUpperCase() }} ({{ move.power }})
+              </button>
+            </div>
+          </div>
+          <!-- Botón para cerrar batalla, debajo de la caja de movimientos -->
+          <button class="battle-button" @click="cerrarBattleOverlay">
+            Cerrar Batalla
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const typeTranslations = {
+      "normal": "Normal",
+      "fire": "Fuego",
+      "water": "Agua",
+      "electric": "Eléctrico",
+      "grass": "Planta",
+      "ice": "Hielo",
+      "fighting": "Lucha",
+      "poison": "Veneno",
+      "ground": "Tierra",
+      "flying": "Volador",
+      "psychic": "Psíquico",
+      "bug": "Bicho",
+      "rock": "Roca",
+      "ghost": "Fantasma",
+      "dragon": "Dragón",
+      "dark": "Siniestro",
+      "steel": "Acero",
+      "fairy": "Hada"
+    };
+    
+    const app = Vue.createApp({
+      data() {
+        return {
+          // Equipos (5 espacios vacíos inicialmente)
+          pokemonsJugador1: Array.from({ length: 5 }, () => ({})),
+          pokemonsJugador2: Array.from({ length: 5 }, () => ({})),
+          // Slots de batalla (drag & drop)
+          battleSlot1: {},
+          battleSlot2: {},
+          // Modal de selección manual
+          modalManual: false,
+          filtroNombre: "",
+          filtroTipo: "",
+          todosLosPokemon: [],
+          // Overlay de batalla
+          battleOverlayVisible: false,
+          // Turno actual (jugador1 o jugador2)
+          turno: 'jugador1'
+        };
+      },
+      computed: {
+        // Filtra todosLosPokemon según nombre y tipo (usando traducción)
+        filteredPokemon() {
+          return this.todosLosPokemon.filter(pk => {
+            const coincideNombre = pk.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase());
+            const coincideTipo = this.filtroTipo === "" || (pk.types && pk.types.some(t => typeTranslations[t] === this.filtroTipo));
+            return coincideNombre && coincideTipo;
+          });
+        },
+        // Lista de tipos únicos (en español) presentes en todosLosPokemon
+        tiposUnicos() {
+          const setTipos = new Set();
+          this.todosLosPokemon.forEach(pk => {
+            if (pk.types) {
+              pk.types.forEach(t => {
+                if (typeTranslations[t])
+                  setTipos.add(typeTranslations[t]);
+              });
+            }
+          });
+          return Array.from(setTipos).sort();
+        }
+      },
+      methods: {
+        async obtenerPokemon() {
+          const peticiones = [];
+          for (let i = 1; i <= 151; i++) {
+            peticiones.push(fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then(r => r.json()));
+          }
+          const datos = await Promise.all(peticiones);
+          return datos.map(p => ({
+            nombre: p.name,
+            sprites: p.sprites,
+            stats: p.stats,
+            movimientos: p.moves, // Contiene lista de moves (cada uno con "move": { name, url })
+            types: p.types.map(t => t.type.name),
+            derrota: false,
+            vida: p.stats.find(s => s.stat.name === 'hp')?.base_stat || 50
+          }));
+        },
+        async generarPokemonAleatorios() {
+          // Si aún no hemos cargado todos los Pokémon, lo hacemos
+          if (!this.todosLosPokemon.length) {
+            this.todosLosPokemon = await this.obtenerPokemon();
+          }
+          let disponibles = [...this.todosLosPokemon];
+          this.pokemonsJugador1 = [];
+          this.pokemonsJugador2 = [];
+          for (let i = 0; i < 5; i++) {
+            let idx1 = Math.floor(Math.random() * disponibles.length);
+            let p1 = { ...disponibles[idx1] };
+            p1.derrota = false;
+            this.pokemonsJugador1.push(p1);
+            disponibles.splice(idx1, 1);
+            
+            let idx2 = Math.floor(Math.random() * disponibles.length);
+            let p2 = { ...disponibles[idx2] };
+            p2.derrota = false;
+            this.pokemonsJugador2.push(p2);
+            disponibles.splice(idx2, 1);
+          }
+          // Reiniciamos los slots de batalla
+          this.battleSlot1 = {};
+          this.battleSlot2 = {};
+          this.turno = 'jugador1';
+        },
+        vaciarTablero() {
+          this.pokemonsJugador1 = Array.from({ length: 5 }, () => ({}));
+          this.pokemonsJugador2 = Array.from({ length: 5 }, () => ({}));
+          this.battleSlot1 = {};
+          this.battleSlot2 = {};
+          this.battleOverlayVisible = false;
+          this.turno = 'jugador1';
+        },
+        /* ---------- Drag & Drop ---------- */
+        onDragStart(e, pokemon, jugador, indice) {
+          // Guardamos en dataTransfer la información del Pokémon y su equipo de origen
+          e.dataTransfer.setData("pokemon", JSON.stringify(pokemon));
+          e.dataTransfer.setData("equipo", jugador);
+        },
+        onDrop(e, destinoEquipo) {
+          const data = e.dataTransfer.getData("pokemon");
+          const pokemon = JSON.parse(data);
+          // Si ya está debilitado, no permitimos
+          if (pokemon.derrota) return;
+          
+          if (destinoEquipo === 'jugador1' && pokemon.nombre) {
+            this.battleSlot1 = { ...pokemon };
+          }
+          if (destinoEquipo === 'jugador2' && pokemon.nombre) {
+            this.battleSlot2 = { ...pokemon };
+          }
+          // Reiniciamos el turno al arrastrar (opcional)
+          this.turno = 'jugador1';
+        },
+        /* ---------- Modal de Selección Manual ---------- */
+        abrirModalManual() {
+          this.modalManual = true;
+        },
+        cerrarModalManual() {
+          this.modalManual = false;
+          this.filtroNombre = "";
+          this.filtroTipo = "";
+        },
+        seleccionarPokemonManual(pokemon) {
+          // Asigna al primer espacio vacío (Equipo 1, luego Equipo 2)
+          let asignado = false;
+          for (let i = 0; i < this.pokemonsJugador1.length; i++) {
+            if (!this.pokemonsJugador1[i].nombre) {
+              this.pokemonsJugador1.splice(i, 1, { ...pokemon, derrota: false });
+              asignado = true;
+              break;
+            }
+          }
+          if (!asignado) {
+            for (let i = 0; i < this.pokemonsJugador2.length; i++) {
+              if (!this.pokemonsJugador2[i].nombre) {
+                this.pokemonsJugador2.splice(i, 1, { ...pokemon, derrota: false });
+                asignado = true;
+                break;
+              }
+            }
+          }
+          // Si ambos equipos están completos, cerramos el modal
+          if (this.pokemonsJugador1.every(p => p.nombre) && this.pokemonsJugador2.every(p => p.nombre)) {
+            this.cerrarModalManual();
+          }
+        },
+        /* ---------- Asignar movimientos con poder > 0 (máx 4) ---------- */
+        async asignarMovimientos(pokemon) {
+          if (!pokemon.movimientos) return;
+          const validMoves = [];
+          // Copiamos la lista de movimientos disponibles
+          const movesToCheck = [...pokemon.movimientos];
+          let tries = 0;
+          // Intentamos buscar hasta 4 movimientos con poder > 0
+          while (validMoves.length < 4 && tries < 100 && movesToCheck.length > 0) {
+            tries++;
+            // Tomamos un movimiento al azar
+            const randomIndex = Math.floor(Math.random() * movesToCheck.length);
+            const moveEntry = movesToCheck[randomIndex];
+            movesToCheck.splice(randomIndex, 1); // lo removemos para no repetir
+            try {
+              // moveEntry.move.url es el endpoint con datos del movimiento
+              const moveData = await fetch(moveEntry.move.url).then(r => r.json());
+              if (moveData.power && moveData.power > 0) {
+                validMoves.push({
+                  name: moveData.name,
+                  power: moveData.power
+                });
+              }
+            } catch(e) {
+              console.error(e);
+            }
+          }
+          pokemon.moveset = validMoves;
+        },
+        /* ---------- Battle Overlay ---------- */
+        async abrirBattleOverlay() {
+          if (!this.battleSlot1.nombre || !this.battleSlot2.nombre) {
+            alert("Debes arrastrar un Pokémon de cada equipo al área de batalla.");
+            return;
+          }
+          // Asignamos movimientos a los Pokémon si aún no los tienen
+          if (!this.battleSlot1.moveset) {
+            await this.asignarMovimientos(this.battleSlot1);
+          }
+          if (!this.battleSlot2.moveset) {
+            await this.asignarMovimientos(this.battleSlot2);
+          }
+          this.battleOverlayVisible = true;
+        },
+        cerrarBattleOverlay() {
+          this.battleOverlayVisible = false;
+        },
+        /* ---------- Sistema de ataque/turnos sencillo ---------- */
+        atacar(move, atacante, defensor) {
+          const defender = (defensor === 'jugador1') ? this.battleSlot1 : this.battleSlot2;
+          
+          // Aplicamos daño directo igual al "power"
+          defender.vida -= move.power;
+          if (defender.vida < 0) defender.vida = 0;
+          
+          // Comprobamos si se debilitó
+          if (defender.vida === 0) {
+            defender.derrota = true; // Marcamos como derrotado
+            // Cerramos el modal de batalla
+            this.cerrarBattleOverlay();
+            return;
+          }
+          
+          // Cambiamos el turno
+          this.turno = (this.turno === 'jugador1') ? 'jugador2' : 'jugador1';
+        },
+        /* ---------- Utilidades para HP ---------- */
+        getMaxHP(pokemon) {
+          if (!pokemon || !pokemon.stats) return 0;
+          const stat = pokemon.stats.find(s => s.stat.name === 'hp');
+          return stat ? stat.base_stat : 0;
+        },
+        getCurrentHP(pokemon) {
+          if (!pokemon) return 0;
+          return pokemon.vida !== undefined ? pokemon.vida : this.getMaxHP(pokemon);
+        },
+        getHPPercentage(pokemon) {
+          const max = this.getMaxHP(pokemon);
+          const current = this.getCurrentHP(pokemon);
+          return max ? Math.floor((current / max) * 100) : 0;
+        }
+      },
+      async mounted() {
+        // Cargamos todos los Pokémon para el modal (solo una vez)
+        if (!this.todosLosPokemon.length) {
+          this.todosLosPokemon = await this.obtenerPokemon();
+        }
+        // Generamos equipos aleatorios al inicio (opcional)
+        this.generarPokemonAleatorios();
+      }
+    });
+    app.mount("#app");
+  </script>
 </body>
 </html>

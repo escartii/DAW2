@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @Author: Álvaro Escartí Lamolda
+ * @Author: Álvaro Escarti Lamolda
  */
 
 // Recuperar los valores anteriores antes de sobrescribir

@@ -1,390 +1,1185 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batalla Pokémon</title>
+  <meta charset="UTF-8">
+  <title>Batalla Pokémon - Drag & Drop y Selección Manual</title>
   <!-- Se incluye Vue 3 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <!-- Se enlaza la hoja de estilos existente -->
-  <link rel="stylesheet" href="tablero.css" />
-  <!-- Estilos adicionales para el configurador, marcador y modal de batalla -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Fuente estilo Pokémon -->
+  <style>
+    @font-face {
+        font-family: "fuente1";
+        src: url('./fonts/Pokemon.ttf');
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      background: url('./img/bulbassur.jpg') no-repeat center center fixed;
+      
+    }
+    h1 {
+      font-family: "fuente1";
+      font-size: 2rem; 
+    }
+    h2 {
+      font-family: "fuente1";
+      font-size: 2rem;
+    }
+    .titulo2 {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    /* ---------- Contenedor principal ---------- */
+    #app {
+      width: 95%;
+      max-width: 1400px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    /* ---------- Alertas (estilo Bootstrap) ---------- */
+    .alert-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 5000;
+    }
+    .alert {
+      padding: 10px 20px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      color: #721c24;
+      margin-bottom: 10px;
+    }
+    /* ---------- Alerta centrada ---------- */
+    .center-alert {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 30px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      color: #721c24;
+      z-index: 6000;
+      font-size: 1.2em;
+    }
+    /* ---------- Área principal (paneles y área de batalla) ---------- */
+    .main-container {
+      display: flex;
+      flex: 1;
+      min-height: 450px;
+    }
+    /* ---------- Paneles de Equipo ---------- */
+    .team-panel {
+      width: 25%;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    .team-panel-left {
+      background: #FFF9C4;
+      border-right: 2px solid #eee;
+    }
+    .team-panel-right {
+      background: #BBDEFB;
+      border-left: 2px solid #eee;
+    }
+    .team-panel h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .team-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .team-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: grab;
+      transition: background-color 0.5s;
+    }
+    .team-card img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+    .pokemon-info {
+      flex: 1;
+    }
+    .pokemon-name {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.95em;
+    }
+    .hp-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 3px;
+    }
+    .hp-fill {
+      height: 100%;
+      background: #48c048;
+      border-radius: 4px;
+    }
+    .hp-text {
+      font-size: 0.8em;
+      color: #555;
+    }
+    /* ---------- Estadísticas en línea ---------- */
+    .stats-preview {
+      margin-top: 4px;
+      font-size: 0.8em;
+      color: #555;
+    }
+    .stats-preview span {
+      display: inline;
+    }
+    /* ---------- Estilo para Pokémon debilitado ---------- */
+    .debilitado {
+      background-color: #ffb3b3 !important;
+      cursor: not-allowed !important;
+    }
+    /* ---------- Área de Batalla (Centro) ---------- */
+    .battle-arena {
+      width: 50%;
+      padding: 15px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-left: 2px solid #eee;
+      border-right: 2px solid #eee;
+    }
+    .battle-arena h2 {
+      margin-bottom: 15px;
+    }
+    .battle-slots {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-bottom: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .battle-slot {
+      width: 140px;
+      height: 180px;
+      background: rgba(240,240,240,0.8);
+      border: 3px dashed #999;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .battle-slot img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+    .battle-slot p {
+      margin-top: 4px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+    .slot-label {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 0.8em;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .stadium-button {
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .stadium-button:hover {
+      background: #555;
+    }
+    /* ---------- Panel de Controles (Abajo) ---------- */
+    .control-panel {
+      padding: 15px;
+      text-align: center;
+      background: #f7f7f7;
+      border-top: 1px solid #eee;
+    }
+    .control-panel button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .control-panel button:hover {
+      background: #555;
+    }
+    /* ---------- Modal de Selección Manual y Resultado ---------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+    }
+    .modal-content h3 {
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: normal;
+    }
+    .search-filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-filters input,
+    .search-filters select {
+      padding: 5px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    .modal-carta {
+      width: 100px;
+      height: 120px;
+      background-color: #f5f5f5;
+      border: 2px solid #333;
+      border-radius: 5px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .modal-carta:hover {
+      transform: scale(1.05);
+    }
+    .modal-carta .nombre-pokemon {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 0.8em;
+      text-align: center;
+      padding: 2px 0;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .modal-close:hover {
+      background-color: #555;
+    }
+    /* ---------- Modal de Moneda ---------- */
+    .coin-modal-content {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    /* ---------- Battle Stadium Overlay (Estadio de Batalla) ---------- */
+    .battle-screen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 3000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .battle-screen {
+      width: 800px;
+      min-height: 600px;
+      background-color: #d0f0c0;
+      position: relative;
+      border: 8px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .battle-gba-interface {
+      width: 100%;
+      min-height: 100%;
+      position: relative;
+      background-color: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    /* Info de Pokémon rival (arriba) */
+    .opponent-info {
+      position: absolute;
+      top: 30px;
+      left: 40px;
+      width: 300px;
+      height: 60px;
+      background: #ffffff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 5px 10px;
+    }
+    .info-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    .pokemon-name {
+      font-weight: bold;
+    }
+    .pokemon-level {
+      margin-left: 10px;
+    }
+    .pokemon-gender {
+      margin-left: 5px;
+      color: #e00;
+    }
+    .hp-bar-container {
+      margin-top: 5px;
+    }
+    .hp-bar-container .hp-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .hp-bar-container .hp-fill {
+      height: 100%;
+      background: #48c048;
+      border-radius: 4px;
+    }
+    /* Info de Pokémon del jugador (abajo) */
+    .player-info {
+      position: absolute;
+      bottom: 210px;
+      right: 40px;
+      width: 300px;
+      height: 60px;
+      background: #ffffff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 5px 10px;
+    }
+    /* Zona central para las imágenes */
+    .active-battle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      position: relative;
+      margin-top: 40px;
+      margin-bottom: 120px;
+    }
+    .active-pokemon {
+      text-align: center;
+      position: relative;
+    }
+    .active-pokemon img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 5px;
+    }
+    .vs-overlay {
+      font-size: 3em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    /* Stats con animación en el estadio (opcional) */
+    .pokemon-stats {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .active-pokemon:hover .pokemon-stats {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+    .stat-item {
+      font-size: 0.85em;
+      margin: 2px 0;
+    }
+    /* Caja de movimientos */
+    .moves-box {
+      background: #ccc;
+      border-top: 2px solid #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    .moves-list-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .move-owner {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 1em;
+      text-transform: uppercase;
+    }
+    .moves-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+    .move-button {
+      padding: 8px 12px;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .move-button:hover {
+      background: #f0f0f0;
+    }
+    .battle-button {
+      margin: 10px auto 0 auto;
+      display: block;
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    .battle-button:hover {
+      background: #555;
+    }
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .team-panel, .battle-arena {
+        width: 100%;
+      }
+      .battle-arena {
+        border: none;
+        margin: 15px 0;
+      }
+      .player-info {
+        bottom: 230px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app">
-    <!-- Panel de Configurador (izquierda) -->
-    <div class="configurador" v-if="!battleModalAbierto">
-      <h2>Configurador</h2>
+    <!-- Alertas en esquina superior derecha -->
+    <div class="alert-container">
+      <div v-for="(alert, index) in alerts" :key="index" class="alert">
+        {{ alert.message }}
+      </div>
+    </div>
+    <!-- Alerta centrada -->
+    <div v-if="centerAlertVisible" class="center-alert">
+      {{ centerAlertMessage }}
+    </div>
+    <header>
+      <h1>Batalla Pokémon</h1>
+    </header>
+    <div class="main-container">
+      <!-- Panel Equipo 1 -->
+      <div class="team-panel team-panel-left">
+        <h2>Equipo 1</h2>
+        <div class="team-cards">
+          <!-- Se muestran todos los Pokémon asignados (incluso los debilitados) -->
+          <div v-for="(pokemon, index) in pokemonsJugador1.filter(p => p.nombre)" :key="index" 
+               class="team-card" :class="{ debilitado: pokemon.derrota }"
+               :draggable="pokemon.nombre && !pokemon.derrota"
+               @dragstart="onDragStart($event, pokemon, 'jugador1', index)">
+            <img :src="pokemon.sprites ? pokemon.sprites.front_default : ''" alt="Pokemon">
+            <div class="pokemon-info">
+              <div class="pokemon-name">{{ pokemon.nombre || 'Sin asignar' }}</div>
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: getHPPercentage(pokemon) + '%' }"></div>
+              </div>
+              <div class="hp-text">{{ getCurrentHP(pokemon) }} / {{ getMaxHP(pokemon) }}</div>
+              <!-- Estadísticas en línea -->
+              <div class="stats-preview" v-if="pokemon.nombre">
+                <span>ATAQUE: {{ getStat(pokemon, 'attack') }}</span>
+                <span> / </span>
+                <span>DEFENSA: {{ getStat(pokemon, 'defense') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Área de Batalla (Drop zones) -->
+      <div class="battle-arena">
+        <h2 class="titulo2">Arrastra tus Pokémon</h2>
+        <div class="battle-slots">
+          <!-- Slot para Equipo 1 -->
+          <div class="battle-slot" 
+               @dragover.prevent 
+               @drop="onDrop($event, 'jugador1')">
+            <div class="slot-label">Equipo 1</div>
+            <div v-if="battleSlot1.nombre" class="battle-slot-content">
+              <img :src="battleSlot1.sprites.front_default" alt="Pokemon">
+              <p>{{ battleSlot1.nombre }}</p>
+            </div>
+          </div>
+          <!-- Slot para Equipo 2 -->
+          <div class="battle-slot" 
+               @dragover.prevent 
+               @drop="onDrop($event, 'jugador2')">
+            <div class="slot-label">Equipo 2</div>
+            <div v-if="battleSlot2.nombre" class="battle-slot-content">
+              <img :src="battleSlot2.sprites.front_default" alt="Pokemon">
+              <p>{{ battleSlot2.nombre }}</p>
+            </div>
+          </div>
+        </div>
+        <button class="stadium-button" @click="abrirBattleOverlay">
+          Ir al Estadio
+        </button>
+      </div>
+      
+      <!-- Panel Equipo 2 -->
+      <div class="team-panel team-panel-right">
+        <h2>Equipo 2</h2>
+        <div class="team-cards">
+          <div v-for="(pokemon, index) in pokemonsJugador2.filter(p => p.nombre)" :key="index" 
+               class="team-card" :class="{ debilitado: pokemon.derrota }"
+               :draggable="pokemon.nombre && !pokemon.derrota"
+               @dragstart="onDragStart($event, pokemon, 'jugador2', index)">
+            <img :src="pokemon.sprites ? pokemon.sprites.front_default : ''" alt="Pokemon">
+            <div class="pokemon-info">
+              <div class="pokemon-name">{{ pokemon.nombre || 'Sin asignar' }}</div>
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: getHPPercentage(pokemon) + '%' }"></div>
+              </div>
+              <div class="hp-text">{{ getCurrentHP(pokemon) }} / {{ getMaxHP(pokemon) }}</div>
+              <!-- Estadísticas en línea -->
+              <div class="stats-preview" v-if="pokemon.nombre">
+                <span>ATAQUE: {{ getStat(pokemon, 'attack') }}</span>
+                <span> / </span>
+                <span>DEFENSA: {{ getStat(pokemon, 'defense') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Panel de controles inferior -->
+    <div class="control-panel">
+      <button @click="generarPokemonAleatorios">Generar Pokémon Aleatorios</button>
       <button @click="vaciarTablero">Vaciar Tablero</button>
-      <button @click="comenzarBatalla">Comenzar Batalla</button>
+      <button @click="abrirModalManual">Elegir Pokémon Manualmente</button>
     </div>
-
-    <!-- Marcador (derecha) -->
-    <div class="scoreboard" v-if="!battleModalAbierto">
-      <h2>Marcador</h2>
-      <p>Jugador 1: {{ remainingJugador1 }} / 5</p>
-      <p>Jugador 2: {{ remainingJugador2 }} / 5</p>
-    </div>
-
-    <!-- Tablero de selección de Pokémon (se oculta durante la batalla) -->
-    <div class="tablero" v-if="!battleModalAbierto">
-      <h1 class="titulo">{{ titulo }}</h1>
-
-      <!-- Botones de acción -->
-      <div class="actions">
-        <button @click="generarPokemonAleatorios">Generar Pokémon Aleatorios</button>
-        <button @click="abrirModal">Elegir Pokémon Manualmente</button>
-      </div>
-
-      <!-- Fila superior: Jugador 1 -->
-      <div class="fila fila-superior">
-        <div
-          v-for="(pokemon, indice) in pokemonsJugador1"
-          :key="indice"
-          class="carta"
-          :style="{
-            backgroundImage: 'url(' + (pokemon.derrota ? './img/dorso.png' : (pokemon.sprites ? pokemon.sprites.front_default : '')) + ')'
-          }"
-          @click="elegirPokemon(pokemonsJugador1, indice)"
-          :title="'Jugador 1: ' + (pokemon.nombre || 'Sin asignar')"
-        >
-          <div v-if="pokemon.nombre" class="nombre-pokemon">{{ pokemon.nombre }}</div>
-        </div>
-      </div>
-
-      <!-- Texto VS -->
-      <div class="vs">
-        <span>VS</span>
-      </div>
-
-      <!-- Fila inferior: Jugador 2 -->
-      <div class="fila fila-inferior">
-        <div
-          v-for="(pokemon, indice) in pokemonsJugador2"
-          :key="indice"
-          class="carta"
-          :style="{
-            backgroundImage: 'url(' + (pokemon.derrota ? './img/dorso.png' : (pokemon.sprites ? pokemon.sprites.front_default : '')) + ')'
-          }"
-          @click="elegirPokemon(pokemonsJugador2, indice)"
-          :title="'Jugador 2: ' + (pokemon.nombre || 'Sin asignar')"
-        >
-          <div v-if="pokemon.nombre" class="nombre-pokemon">{{ pokemon.nombre }}</div>
-        </div>
-      </div>
-
-      <!-- Nombres de jugadores -->
-      <div class="jugadores">
-        <div class="jugador" id="j1">J1</div>
-        <div class="jugador" id="j2">J2</div>
-      </div>
-    </div>
-
-    <!-- Modal para selección manual de Pokémon -->
-    <div v-if="modalAbierto" class="modal-overlay">
+    
+    <!-- Modal de Selección Manual -->
+    <div v-if="modalManual" class="modal-overlay">
       <div class="modal-content">
         <h2>Selecciona tus Pokémon</h2>
+        <h3>{{ manualSelectionMessage }}</h3>
+        <div class="search-filters">
+          <input v-model="filtroNombre" type="text" placeholder="Buscar por nombre..." />
+          <select v-model="filtroTipo">
+            <option value="">Todos los tipos</option>
+            <option v-for="tipo in tiposUnicos" :key="tipo" :value="tipo">{{ tipo }}</option>
+          </select>
+        </div>
         <div class="modal-grid">
-          <div
-            v-for="(pokemon, indice) in todosLosPokemon"
-            :key="indice"
-            class="modal-carta"
-            :style="{ backgroundImage: 'url(' + pokemon.sprites.front_default + ')' }"
-            @click="seleccionarPokemon(pokemon)"
-            :title="pokemon.nombre"
-          >
-            <div v-if="pokemon.nombre" class="nombre-pokemon">{{ pokemon.nombre }}</div>
+          <div v-for="(pokemon, index) in filteredPokemon" :key="index" class="modal-carta"
+               :style="{ backgroundImage: 'url(' + pokemon.sprites.front_default + ')' }"
+               @click="seleccionarPokemonManual(pokemon)"
+               :title="pokemon.nombre">
+            <div class="nombre-pokemon">{{ pokemon.nombre }}</div>
           </div>
         </div>
-        <button class="modal-close" @click="cerrarModal">Cerrar</button>
+        <button class="modal-close" @click="cerrarModalManual">Cerrar</button>
       </div>
     </div>
-
-    <!-- Modal de Batalla: se abre al comenzar la pelea -->
-    <div v-if="battleModalAbierto" class="modal-overlay">
+    
+    <!-- Modal de Moneda -->
+    <div v-if="coinTossModalVisible" class="modal-overlay">
+      <div class="coin-modal-content">
+        <h2>Tira la moneda</h2>
+        <p v-if="!coinResult">Presiona el botón para lanzar la moneda.</p>
+        <p v-else>
+          La moneda cayó en <strong>{{ coinResult }}</strong>.<br>
+          Comienza {{ turno === 'jugador1' ? 'Jugador 1' : 'Jugador 2' }}.
+        </p>
+        <button v-if="!coinResult" class="modal-close" @click="lanzarMoneda">Lanzar Moneda</button>
+        <button v-if="coinResult" class="modal-close" @click="comenzarBatalla">Comenzar Batalla</button>
+      </div>
+    </div>
+    
+    <!-- Battle Stadium Overlay -->
+    <div v-if="battleOverlayVisible" class="battle-screen-overlay">
+      <div class="battle-screen">
+        <!-- Interfaz retro tipo GBA -->
+        <div class="battle-gba-interface">
+          <!-- Zona central: Pokémon 2 arriba y Pokémon 1 abajo -->
+          <div class="active-battle">
+            <!-- Pokémon 2 arriba -->
+            <div class="active-pokemon" v-if="battleSlot2.nombre">
+              <img :src="battleSlot2.sprites.front_default" alt="Pokemon">
+              <div class="pokemon-stats">
+                <div class="stat-item">HP: {{ getMaxHP(battleSlot2) }}</div>
+                <div class="stat-item">ATK: {{ getStat(battleSlot2, 'attack') }}</div>
+                <div class="stat-item">DEF: {{ getStat(battleSlot2, 'defense') }}</div>
+                <div class="stat-item">SP. ATK: {{ getStat(battleSlot2, 'special-attack') }}</div>
+                <div class="stat-item">SP. DEF: {{ getStat(battleSlot2, 'special-defense') }}</div>
+                <div class="stat-item">SPEED: {{ getStat(battleSlot2, 'speed') }}</div>
+              </div>
+              <div class="vs-overlay" v-if="battleSlot1.nombre && battleSlot2.nombre">VS</div>
+            </div>
+            <!-- Pokémon 1 abajo -->
+            <div class="active-pokemon" v-if="battleSlot1.nombre">
+              <img :src="battleSlot1.sprites.front_default" alt="Pokemon">
+              <div class="pokemon-stats">
+                <div class="stat-item">HP: {{ getMaxHP(battleSlot1) }}</div>
+                <div class="stat-item">ATK: {{ getStat(battleSlot1, 'attack') }}</div>
+                <div class="stat-item">DEF: {{ getStat(battleSlot1, 'defense') }}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Info del Pokémon rival (arriba) -->
+          <div class="opponent-info" v-if="battleSlot2.nombre">
+            <div class="info-top">
+              <span class="pokemon-name">{{ battleSlot2.nombre }}</span>
+              <span class="pokemon-level">Lv.00</span>
+            </div>
+            <div class="hp-bar-container">
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: (battleSlot2.vida / getMaxHP(battleSlot2) * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Info del Pokémon del jugador (abajo) -->
+          <div class="player-info" v-if="battleSlot1.nombre">
+            <div class="info-top">
+              <span class="pokemon-name">{{ battleSlot1.nombre }}</span>
+              <span class="pokemon-level">Lv.00</span>
+            </div>
+            <div class="hp-bar-container">
+              <div class="hp-bar">
+                <div class="hp-fill" :style="{ width: (battleSlot1.vida / getMaxHP(battleSlot1) * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Caja de movimientos con turnos (abajo) -->
+          <div class="moves-box">
+            <template v-if="turno === 'jugador1'">
+              <div v-if="battleSlot1.moveset" class="moves-list-container">
+                <div class="move-owner">Movimientos de {{ battleSlot1.nombre }}</div>
+                <div class="moves-list">
+                  <button class="move-button"
+                          v-for="(move, i) in battleSlot1.moveset"
+                          :key="i"
+                          @click="atacar(move, 'jugador1', 'jugador2')">
+                    {{ move.name.toUpperCase() }} ({{ move.power }})
+                  </button>
+                </div>
+              </div>
+              <div v-else>
+                Cargando movimientos...
+              </div>
+            </template>
+            <template v-else-if="turno === 'jugador2'">
+              <div v-if="battleSlot2.moveset" class="moves-list-container">
+                <div class="move-owner">Movimientos de {{ battleSlot2.nombre }}</div>
+                <div class="moves-list">
+                  <button class="move-button"
+                          v-for="(move, i) in battleSlot2.moveset"
+                          :key="i"
+                          @click="atacar(move, 'jugador2', 'jugador1')">
+                    {{ move.name.toUpperCase() }} ({{ move.power }})
+                  </button>
+                </div>
+              </div>
+              <div v-else>
+                Cargando movimientos...
+              </div>
+            </template>
+          </div>
+          <!-- Botón para cerrar batalla -->
+          <button class="battle-button" @click="cerrarBattleOverlay">
+            Cerrar Batalla
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal Resultado de Batalla -->
+    <div v-if="battleResultModalVisible" class="modal-overlay">
       <div class="modal-content">
-        <h2>Pelea {{ currentBattleIndex + 1 }}</h2>
-        <p>Turno: Jugador {{ turno }}</p>
-        <div v-if="activePokemonJugador1 && activePokemonJugador2">
-          <p>
-            {{ activePokemonJugador1.nombre }} (HP: {{ activePokemonJugador1.vida }})
-            VS
-            {{ activePokemonJugador2.nombre }} (HP: {{ activePokemonJugador2.vida }})
-          </p>
-        </div>
-        <div class="battle-log">
-          <div v-for="(log, index) in battleLog" :key="index">
-            <p>{{ log }}</p>
+        <h2>¡Ganador: {{ winner }}!</h2>
+        <p>Pokémon sobrevivientes:</p>
+        <div class="modal-grid">
+          <div v-for="(pokemon, index) in winnerPokemons" :key="index" class="modal-carta" :style="{ backgroundImage: 'url(' + pokemon.sprites.front_default + ')' }">
+            <div class="nombre-pokemon">{{ pokemon.nombre }}</div>
           </div>
         </div>
+        <button class="modal-close" @click="cerrarResultadoModal">Cerrar</button>
       </div>
     </div>
+    
   </div>
   
-  <!-- Código JavaScript -->
+  <!-- Audio de fondo -->
+  <audio id="background-music" src="./audio/pokemon.mp3" autoplay loop style="display: none;"></audio>
+  
   <script>
+    const typeTranslations = {
+      "normal": "Normal",
+      "fire": "Fuego",
+      "water": "Agua",
+      "electric": "Eléctrico",
+      "grass": "Planta",
+      "ice": "Hielo",
+      "fighting": "Lucha",
+      "poison": "Veneno",
+      "ground": "Tierra",
+      "flying": "Volador",
+      "psychic": "Psíquico",
+      "bug": "Bicho",
+      "rock": "Roca",
+      "ghost": "Fantasma",
+      "dragon": "Dragón",
+      "dark": "Siniestro",
+      "steel": "Acero",
+      "fairy": "Hada"
+    };
+    
     const app = Vue.createApp({
       data() {
         return {
-          titulo: "Batalla Pokémon",
-          todosLosPokemon: [], // Todos los Pokémon (1ª generación)
-          pokemonsJugador1: Array.from({ length: 5 }, () => ({})), // 5 cartas para el jugador 1
-          pokemonsJugador2: Array.from({ length: 5 }, () => ({})), // 5 cartas para el jugador 2
-          modalAbierto: false,
-          // Variables para la pelea
-          activePokemonJugador1: null,
-          activePokemonJugador2: null,
-          battleModalAbierto: false,
-          turno: 1,
-          battleLog: [],
-          batallaFinalizada: false,
-          currentBattleIndex: 0 // Indica el par de Pokémon actual (0 = primer vs. primer, 1 = segundo vs. segundo, etc.)
+          // Equipos vacíos inicialmente (5 espacios)
+          pokemonsJugador1: Array.from({ length: 5 }, () => ({})),
+          pokemonsJugador2: Array.from({ length: 5 }, () => ({})),
+          // Slots de batalla
+          battleSlot1: {},
+          battleSlot2: {},
+          // Modal de selección manual
+          modalManual: false,
+          filtroNombre: "",
+          filtroTipo: "",
+          todosLosPokemon: [],
+          // Overlay de batalla
+          battleOverlayVisible: false,
+          // Turno actual (jugador1 o jugador2)
+          turno: 'jugador1',
+          // Modal de resultado de batalla
+          winner: '',
+          winnerPokemons: [],
+          battleResultModalVisible: false,
+          // Alertas para notificar cuando un Pokémon es debilitado
+          alerts: [],
+          // Alerta central para tablero vacío
+          centerAlertVisible: false,
+          centerAlertMessage: "",
+          // Modal de moneda
+          coinTossModalVisible: false,
+          coinResult: "",
+          coinTossRealizado: false  // Nueva variable para indicar si ya se lanzó la moneda
         };
       },
       computed: {
-        // Número de Pokémon no derrotados por equipo
-        remainingJugador1() {
-          return this.pokemonsJugador1.filter(p => p.nombre && !p.derrota).length;
+        filteredPokemon() {
+          return this.todosLosPokemon.filter(pk => {
+            const coincideNombre = pk.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase());
+            const coincideTipo = this.filtroTipo === "" || (pk.types && pk.types.some(t => typeTranslations[t] === this.filtroTipo));
+            return coincideNombre && coincideTipo;
+          });
         },
-        remainingJugador2() {
-          return this.pokemonsJugador2.filter(p => p.nombre && !p.derrota).length;
+        tiposUnicos() {
+          const setTipos = new Set();
+          this.todosLosPokemon.forEach(pk => {
+            if (pk.types) {
+              pk.types.forEach(t => {
+                if (typeTranslations[t]) {
+                  setTipos.add(typeTranslations[t]);
+                }
+              });
+            }
+          });
+          return Array.from(setTipos).sort();
+        },
+        manualSelectionMessage() {
+          const count1 = this.pokemonsJugador1.filter(p => p.nombre).length;
+          return count1 < 5 ? "Elige Pokémon para J1" : "Elige Pokémon para J2";
         }
       },
-      mounted() {
-        this.obtenerPokemon();
-      },
       methods: {
-        // Obtiene los 151 primeros Pokémon de la API (incluyendo movimientos)
         async obtenerPokemon() {
-          const primeraGeneracion = [];
+          const peticiones = [];
           for (let i = 1; i <= 151; i++) {
-            primeraGeneracion.push(
-              fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then(res => res.json())
-            );
+            peticiones.push(fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then(r => r.json()));
           }
-          const datosPokemon = await Promise.all(primeraGeneracion);
-          this.todosLosPokemon = datosPokemon.map(pokemon => ({
-            nombre: pokemon.name,
-            sprites: pokemon.sprites,
-            stats: pokemon.stats,
-            movimientos: pokemon.moves, // Se guardan los movimientos
-            derrota: false
+          const datos = await Promise.all(peticiones);
+          return datos.map(p => ({
+            nombre: p.name,
+            sprites: p.sprites,
+            stats: p.stats,
+            movimientos: p.moves,
+            types: p.types.map(t => t.type.name),
+            derrota: false,
+            vida: p.stats.find(s => s.stat.name === 'hp')?.base_stat || 50
           }));
         },
-
-        // Selección manual desde el modal: se asigna el Pokémon al primer espacio vacío
-        seleccionarPokemon(pokemon) {
-          if (this.pokemonsJugador1.some(p => !p.nombre)) {
-            const indice = this.pokemonsJugador1.findIndex(p => !p.nombre);
-            this.pokemonsJugador1[indice] = Object.assign({}, pokemon);
-          } else if (this.pokemonsJugador2.some(p => !p.nombre)) {
-            const indice = this.pokemonsJugador2.findIndex(p => !p.nombre);
-            this.pokemonsJugador2[indice] = Object.assign({}, pokemon);
+        async generarPokemonAleatorios() {
+          // Este método se puede usar para pruebas; al iniciar la app los equipos quedan vacíos.
+          if (!this.todosLosPokemon.length) {
+            this.todosLosPokemon = await this.obtenerPokemon();
           }
-          this.cerrarModal();
-        },
-
-        abrirModal() {
-          this.modalAbierto = true;
-        },
-
-        cerrarModal() {
-          this.modalAbierto = false;
-        },
-
-        // Genera Pokémon aleatoriamente para cada equipo
-        generarPokemonAleatorios() {
+          let disponibles = [...this.todosLosPokemon];
           this.pokemonsJugador1 = [];
           this.pokemonsJugador2 = [];
-          let pokemonsDisponibles = [...this.todosLosPokemon];
           for (let i = 0; i < 5; i++) {
-            let indiceAleatorio1 = Math.floor(Math.random() * pokemonsDisponibles.length);
-            let p1 = Object.assign({}, pokemonsDisponibles[indiceAleatorio1]);
+            let idx1 = Math.floor(Math.random() * disponibles.length);
+            let p1 = { ...disponibles[idx1] };
             p1.derrota = false;
             this.pokemonsJugador1.push(p1);
-            pokemonsDisponibles.splice(indiceAleatorio1, 1);
-            let indiceAleatorio2 = Math.floor(Math.random() * pokemonsDisponibles.length);
-            let p2 = Object.assign({}, pokemonsDisponibles[indiceAleatorio2]);
+            disponibles.splice(idx1, 1);
+            
+            let idx2 = Math.floor(Math.random() * disponibles.length);
+            let p2 = { ...disponibles[idx2] };
             p2.derrota = false;
             this.pokemonsJugador2.push(p2);
-            pokemonsDisponibles.splice(indiceAleatorio2, 1);
+            disponibles.splice(idx2, 1);
           }
+          this.battleSlot1 = {};
+          this.battleSlot2 = {};
+          this.turno = 'jugador1';
         },
-
-        // Vacía el tablero y reinicia las variables de la pelea
         vaciarTablero() {
           this.pokemonsJugador1 = Array.from({ length: 5 }, () => ({}));
           this.pokemonsJugador2 = Array.from({ length: 5 }, () => ({}));
-          this.activePokemonJugador1 = null;
-          this.activePokemonJugador2 = null;
-          this.battleLog = [];
-          this.battleModalAbierto = false;
-          this.currentBattleIndex = 0;
+          this.battleSlot1 = {};
+          this.battleSlot2 = {};
+          this.battleOverlayVisible = false;
+          this.turno = 'jugador1';
+          this.winner = '';
+          this.winnerPokemons = [];
+          this.battleResultModalVisible = false;
         },
-
-        /* -----------------------------------------------------------------
-         * La siguiente lógica permite que cada batalla se realice entre
-         * el Pokémon de la misma posición (primer vs. primer, segundo vs. segundo, etc.).
-         * Al terminar una pelea se cierra el modal, se marca al perdedor (mostrando la imagen ./img/dorso.png)
-         * y, al volver a presionar "Comenzar Batalla", se usa el siguiente par hasta definir un ganador.
-         * ----------------------------------------------------------------- */
-        
-        // Inicia la batalla con el par de Pokémon en la posición currentBattleIndex
-        comenzarBatalla() {
-          // Si ya se han realizado todas las peleas o si alguno de los equipos ya no tiene Pokémon
-          if (
-            this.currentBattleIndex >= this.pokemonsJugador1.length ||
-            this.remainingJugador1 === 0 ||
-            this.remainingJugador2 === 0
-          ) {
-            this.mostrarGanador();
-            return;
-          }
-          // Si no hay Pokémon asignados, se generan aleatoriamente
-          if (!this.pokemonsJugador1.some(p => p.nombre) || !this.pokemonsJugador2.some(p => p.nombre)) {
-            this.generarPokemonAleatorios();
-          }
-          this.iniciarBatallaConIndice(this.currentBattleIndex);
+        /* ---------- Alertas ---------- */
+        addAlert(message) {
+          this.alerts.push({ message });
+          setTimeout(() => {
+            this.alerts.shift();
+          }, 3000);
         },
-
-        // Inicia la batalla para el par en el índice indicado
-        iniciarBatallaConIndice(index) {
-          const p1 = this.pokemonsJugador1[index];
-          const p2 = this.pokemonsJugador2[index];
-          // Copiamos los datos y asignamos la vida según la estadística 'hp'
-          this.activePokemonJugador1 = Object.assign({}, p1);
-          this.activePokemonJugador1.vida = this.obtenerEstadistica(p1, 'hp');
-          this.activePokemonJugador2 = Object.assign({}, p2);
-          this.activePokemonJugador2.vida = this.obtenerEstadistica(p2, 'hp');
-          this.turno = 1;
-          this.battleLog = [];
-          this.batallaFinalizada = false;
-          this.battleModalAbierto = true;
-          this.simularPelea();
+        /* ---------- Drag & Drop ---------- */
+        onDragStart(e, pokemon, jugador, indice) {
+          e.dataTransfer.setData("pokemon", JSON.stringify(pokemon));
+          e.dataTransfer.setData("equipo", jugador);
         },
-
-        // Simula la pelea entre los Pokémon activos hasta que uno (o ambos) sea derrotado.
-        // Al finalizar, se incrementa currentBattleIndex y se cierra el modal.
-        async simularPelea() {
-          while (this.activePokemonJugador1.vida > 0 && this.activePokemonJugador2.vida > 0) {
-            await this.delay(1000);
-            await this.atacarTurno();
-          }
-          // Se marca al o los Pokémon derrotados y se actualiza la carta (mostrando el dorso)
-          if (this.activePokemonJugador1.vida <= 0 && this.activePokemonJugador2.vida <= 0) {
-            this.battleLog.push(`¡Ambos Pokémon han sido derrotados!`);
-            this.pokemonsJugador1[this.currentBattleIndex].derrota = true;
-            this.pokemonsJugador2[this.currentBattleIndex].derrota = true;
-          } else if (this.activePokemonJugador1.vida <= 0) {
-            this.battleLog.push(`${this.activePokemonJugador1.nombre} ha sido derrotado!`);
-            this.pokemonsJugador1[this.currentBattleIndex].derrota = true;
-          } else if (this.activePokemonJugador2.vida <= 0) {
-            this.battleLog.push(`${this.activePokemonJugador2.nombre} ha sido derrotado!`);
-            this.pokemonsJugador2[this.currentBattleIndex].derrota = true;
-          }
-          this.batallaFinalizada = true;
-          // Se espera 2 segundos para que se puedan ver los resultados, se incrementa el índice y se cierra el modal.
-          await this.delay(2000);
-          this.currentBattleIndex++;
-          this.cerrarBatallaModal();
-        },
-
-        // Ejecuta un turno de ataque: se elige aleatoriamente uno de dos movimientos válidos
-        async atacarTurno() {
-          let atacante, defensor;
-          if (this.turno === 1) {
-            atacante = this.activePokemonJugador1;
-            defensor = this.activePokemonJugador2;
-          } else {
-            atacante = this.activePokemonJugador2;
-            defensor = this.activePokemonJugador1;
-          }
-          const movimientos = await this.seleccionarDosMovimientos(atacante);
-          if (movimientos.length < 2) {
-            this.battleLog.push("No se encontraron movimientos válidos para " + atacante.nombre);
-            return;
-          }
-          const indiceAleatorio = Math.floor(Math.random() * 2);
-          const movimientoElegido = movimientos[indiceAleatorio];
-          let defensa = this.obtenerEstadistica(defensor, 'defense');
-          let damage = movimientoElegido.power - defensa;
-          if (damage < 0) damage = 0;
-          defensor.vida -= damage;
-          this.battleLog.push(`${atacante.nombre} usa ${movimientoElegido.nombreAtaque} causando ${damage} puntos de daño a ${defensor.nombre}.`);
-          if (defensor.vida <= 0) {
-            this.battleLog.push(`${defensor.nombre} ha sido derrotado!`);
-          }
-          // Alterna el turno
-          this.turno = this.turno === 1 ? 2 : 1;
-        },
-
-        // Extrae el valor base de la estadística solicitada (por ejemplo, "hp" o "defense")
-        obtenerEstadistica(pokemon, statName) {
-          const statObj = pokemon.stats ? pokemon.stats.find(s => s.stat.name === statName) : null;
-          return statObj ? statObj.base_stat : 0;
-        },
-
-        // Obtiene el detalle de un movimiento a partir de su URL
-        async obtenerDetalleMovimiento(url) {
-          const res = await fetch(url);
-          return await res.json();
-        },
-
-        // Selecciona dos movimientos válidos (con power distinto de null) de forma aleatoria para el Pokémon
-        async seleccionarDosMovimientos(pokemon) {
-          let movimientosValidos = [];
-          let movesShuffled = pokemon.movimientos.slice();
-          for (let i = movesShuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [movesShuffled[i], movesShuffled[j]] = [movesShuffled[j], movesShuffled[i]];
-          }
-          for (let moveObj of movesShuffled) {
-            try {
-              let detalleMovimiento = await this.obtenerDetalleMovimiento(moveObj.move.url);
-              if (detalleMovimiento.power !== null) {
-                let nombreAtaque = (detalleMovimiento.names && detalleMovimiento.names[5])
-                  ? detalleMovimiento.names[5].name
-                  : detalleMovimiento.name;
-                movimientosValidos.push({
-                  nombreAtaque: nombreAtaque,
-                  power: detalleMovimiento.power
-                });
-                if (movimientosValidos.length === 2) break;
-              }
-            } catch (error) {
-              console.error("Error al obtener el detalle del movimiento", error);
+        onDrop(e, destinoEquipo) {
+          const data = e.dataTransfer.getData("pokemon");
+          const pokemon = JSON.parse(data);
+          if (pokemon.derrota) return;
+          if (destinoEquipo === 'jugador1' && pokemon.nombre) {
+            this.battleSlot1 = { ...pokemon };
+            if (!this.battleSlot1.moveset) {
+              this.asignarMovimientos(this.battleSlot1);
             }
           }
-          return movimientosValidos;
-        },
-
-        // Retardo para simular el paso del tiempo entre turnos
-        delay(ms) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        },
-
-        // Cierra el modal de batalla y reinicia las variables activas
-        cerrarBatallaModal() {
-          this.battleModalAbierto = false;
-          this.activePokemonJugador1 = null;
-          this.activePokemonJugador2 = null;
-        },
-
-        // Muestra un mensaje indicando el ganador general del juego.
-        mostrarGanador() {
-          let ganador;
-          if (this.remainingJugador1 > this.remainingJugador2) {
-            ganador = "Jugador 1";
-          } else if (this.remainingJugador2 > this.remainingJugador1) {
-            ganador = "Jugador 2";
-          } else {
-            ganador = "Ninguno (Empate)";
+          if (destinoEquipo === 'jugador2' && pokemon.nombre) {
+            this.battleSlot2 = { ...pokemon };
+            if (!this.battleSlot2.moveset) {
+              this.asignarMovimientos(this.battleSlot2);
+            }
           }
-          alert("El juego ha terminado. Ganador: " + ganador);
+          // No se modifica el turno aquí para respetar la lógica.
+        },
+        /* ---------- Modal de Selección Manual ---------- */
+        abrirModalManual() {
+          this.modalManual = true;
+        },
+        cerrarModalManual() {
+          this.modalManual = false;
+          this.filtroNombre = "";
+          this.filtroTipo = "";
+        },
+        seleccionarPokemonManual(pokemon) {
+          let asignado = false;
+          // Asigna primero al equipo 1
+          for (let i = 0; i < this.pokemonsJugador1.length; i++) {
+            if (!this.pokemonsJugador1[i].nombre) {
+              this.pokemonsJugador1.splice(i, 1, { ...pokemon, derrota: false });
+              asignado = true;
+              break;
+            }
+          }
+          // Si el equipo 1 está completo, asigna al equipo 2
+          if (!asignado) {
+            for (let i = 0; i < this.pokemonsJugador2.length; i++) {
+              if (!this.pokemonsJugador2[i].nombre) {
+                this.pokemonsJugador2.splice(i, 1, { ...pokemon, derrota: false });
+                asignado = true;
+                break;
+              }
+            }
+          }
+          // Cuando ambos equipos estén completos, se cierra el modal
+          if (this.pokemonsJugador1.every(p => p.nombre) && this.pokemonsJugador2.every(p => p.nombre)) {
+            this.cerrarModalManual();
+          }
+        },
+        /* ---------- Asignar movimientos (máx 4) ---------- */
+        async asignarMovimientos(pokemon) {
+          if (!pokemon.movimientos) return;
+          const validMoves = [];
+          const movesToCheck = [...pokemon.movimientos];
+          let tries = 0;
+          while (validMoves.length < 4 && tries < 100 && movesToCheck.length > 0) {
+            tries++;
+            const randomIndex = Math.floor(Math.random() * movesToCheck.length);
+            const moveEntry = movesToCheck[randomIndex];
+            movesToCheck.splice(randomIndex, 1);
+            try {
+              const moveData = await fetch(moveEntry.move.url).then(r => r.json());
+              if (moveData.power && moveData.power > 0) {
+                validMoves.push({
+                  name: moveData.name,
+                  power: moveData.power
+                });
+              }
+            } catch(e) {
+              console.error(e);
+            }
+          }
+          pokemon.moveset = validMoves;
+        },
+        /* ---------- Modal de Moneda y Batalla ---------- */
+        abrirBattleOverlay() {
+          // Si falta algún Pokémon en alguno de los slots, muestra alerta centrada
+          if (!this.battleSlot1.nombre || !this.battleSlot2.nombre) {
+            this.centerAlertMessage = "Añade los Pokemon al tablero !!!";
+            this.centerAlertVisible = true;
+            setTimeout(() => { this.centerAlertVisible = false; }, 3000);
+            return;
+          }
+          // Si aún no se realizó la tirada, muestra el modal de moneda; de lo contrario, abre la batalla directamente
+          if (!this.coinTossRealizado) {
+            this.coinTossModalVisible = true;
+            this.coinResult = "";
+          } else {
+            this.battleOverlayVisible = true;
+          }
+        },
+        lanzarMoneda() {
+          const random = Math.random();
+          if (random < 0.5) {
+            this.coinResult = "Cara";
+            this.turno = "jugador1";
+          } else {
+            this.coinResult = "Cruz";
+            this.turno = "jugador2";
+          }
+        },
+        comenzarBatalla() {
+          // Asignar movimientos si aún no se han asignado
+          if (!this.battleSlot1.moveset) {
+            this.asignarMovimientos(this.battleSlot1);
+          }
+          if (!this.battleSlot2.moveset) {
+            this.asignarMovimientos(this.battleSlot2);
+          }
+          this.coinTossModalVisible = false;
+          this.coinTossRealizado = true; // Se marca que ya se lanzó la moneda
+          this.battleOverlayVisible = true;
+        },
+        cerrarBattleOverlay() {
+          this.battleOverlayVisible = false;
+        },
+        /* ---------- Sistema de ataque/turnos ---------- */
+        atacar(move, atacante, defensor) {
+          const defender = (defensor === 'jugador1') ? this.battleSlot1 : this.battleSlot2;
+          defender.vida -= move.power;
+          if (defender.vida < 0) defender.vida = 0;
+          if (defender.vida === 0) {
+            this.addAlert(`El Pokémon ${defender.nombre} ha sido debilitado.`);
+            defender.derrota = true;
+            if (defensor === 'jugador1') {
+              const index = this.pokemonsJugador1.findIndex(p => p.nombre === defender.nombre);
+              if (index !== -1) {
+                this.pokemonsJugador1[index].derrota = true;
+                this.pokemonsJugador1[index].vida = 0;
+              }
+              this.battleSlot1 = {};
+              const allDefeated = this.pokemonsJugador1.every(p => p.nombre && p.derrota);
+              if (allDefeated) {
+                this.winner = 'Equipo 2';
+                this.winnerPokemons = this.pokemonsJugador2.filter(p => p.nombre && !p.derrota);
+                this.battleResultModalVisible = true;
+                this.battleOverlayVisible = false;
+                return;
+              }
+            } else {
+              const index = this.pokemonsJugador2.findIndex(p => p.nombre === defender.nombre);
+              if (index !== -1) {
+                this.pokemonsJugador2[index].derrota = true;
+                this.pokemonsJugador2[index].vida = 0;
+              }
+              this.battleSlot2 = {};
+              const allDefeated = this.pokemonsJugador2.every(p => p.nombre && p.derrota);
+              if (allDefeated) {
+                this.winner = 'Equipo 1';
+                this.winnerPokemons = this.pokemonsJugador1.filter(p => p.nombre && !p.derrota);
+                this.battleResultModalVisible = true;
+                this.battleOverlayVisible = false;
+                return;
+              }
+            }
+            // Asignar el turno al equipo que perdió el Pokémon.
+            this.turno = defensor;
+            this.cerrarBattleOverlay();
+            return;
+          }
+          // Si el Pokémon no se debilita, alternamos el turno normalmente.
+          this.turno = (this.turno === 'jugador1') ? 'jugador2' : 'jugador1';
+        },
+        /* ---------- Utilidades ---------- */
+        getMaxHP(pokemon) {
+          if (!pokemon || !pokemon.stats) return 0;
+          const stat = pokemon.stats.find(s => s.stat.name === 'hp');
+          return stat ? stat.base_stat : 0;
+        },
+        getCurrentHP(pokemon) {
+          if (!pokemon) return 0;
+          return pokemon.vida !== undefined ? pokemon.vida : this.getMaxHP(pokemon);
+        },
+        getHPPercentage(pokemon) {
+          const max = this.getMaxHP(pokemon);
+          const current = this.getCurrentHP(pokemon);
+          return max ? Math.floor((current / max) * 100) : 0;
+        },
+        getStat(pokemon, statName) {
+          if (!pokemon || !pokemon.stats) return 0;
+          const stat = pokemon.stats.find(s => s.stat.name === statName);
+          return stat ? stat.base_stat : 0;
+        },
+        cerrarResultadoModal() {
+          this.battleResultModalVisible = false;
+        }
+      },
+      async mounted() {
+        // Se carga la lista de Pokémon para la selección manual.
+        if (!this.todosLosPokemon.length) {
+          this.todosLosPokemon = await this.obtenerPokemon();
         }
       }
     });
-
     app.mount("#app");
   </script>
 </body>
